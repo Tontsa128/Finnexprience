@@ -1,0 +1,1 @@
+import Destinos from "../../../destinos/page"; export default Destinos;
