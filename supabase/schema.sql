@@ -79,3 +79,29 @@ on conflict(key) do nothing;
 
 -- Storage: create a public bucket called media in the Supabase dashboard.
 -- The admin UI should upload only after the signed-in user has passed is_admin().
+
+
+create table if not exists destinations (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  name_es text not null default '',
+  name_en text not null default '',
+  name_fi text not null default '',
+  region text not null default '',
+  description_es text not null default '',
+  description_en text not null default '',
+  description_fi text not null default '',
+  image_url text,
+  category text not null default 'destination',
+  featured boolean not null default false,
+  published boolean not null default false,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table destinations enable row level security;
+drop policy if exists "public can read published destinations" on destinations;
+create policy "public can read published destinations" on destinations for select using (published = true or public.is_admin());
+drop policy if exists "admins manage destinations" on destinations;
+create policy "admins manage destinations" on destinations for all using (public.is_admin()) with check (public.is_admin());
