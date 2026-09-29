@@ -105,3 +105,30 @@ drop policy if exists "public can read published destinations" on destinations;
 create policy "public can read published destinations" on destinations for select using (published = true or public.is_admin());
 drop policy if exists "admins manage destinations" on destinations;
 create policy "admins manage destinations" on destinations for all using (public.is_admin()) with check (public.is_admin());
+
+
+create table if not exists trip_requests (
+  id uuid primary key default gen_random_uuid(),
+  name text,
+  email text not null,
+  travel_date text not null,
+  interest text not null,
+  message text not null,
+  locale text not null default 'es' check (locale in ('es','en','fi')),
+  status text not null default 'new' check (status in ('new','contacted','closed')),
+  created_at timestamptz not null default now()
+);
+
+alter table trip_requests enable row level security;
+drop policy if exists "public can create trip requests" on trip_requests;
+create policy "public can create trip requests" on trip_requests
+  for insert with check (
+    length(email) between 5 and 254
+    and length(message) between 10 and 5000
+  );
+drop policy if exists "admins read trip requests" on trip_requests;
+create policy "admins read trip requests" on trip_requests
+  for select using (public.is_admin());
+drop policy if exists "admins manage trip requests" on trip_requests;
+create policy "admins manage trip requests" on trip_requests
+  for update using (public.is_admin()) with check (public.is_admin());
