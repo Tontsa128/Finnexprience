@@ -6,13 +6,14 @@ import { FileText, ImagePlus, LayoutDashboard, LogIn, Plus, Save, Trash2, Upload
 
 type Slide={id:string;image_url:string;alt_es:string;eyebrow_es:string;sort_order:number;active:boolean};
 type Page={id:string;slug:string;title_es:string;title_en:string;title_fi:string;content_es:string;content_en:string;content_fi:string;hero_image:string|null;published:boolean};
+type Destination={id:string;slug:string;name_es:string;name_en:string;name_fi:string;region:string;description_es:string;description_en:string;description_fi:string;image_url:string|null;category:string;featured:boolean;published:boolean;sort_order:number};
 
 const emptyPage={slug:"",title_es:"",title_en:"",title_fi:"",content_es:"",content_en:"",content_fi:"",hero_image:"",published:false};
 
 export default function AdminPage(){
  const supabase=createSupabaseBrowserClient();
  const [session,setSession]=useState<any>(null),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[error,setError]=useState(""),[loading,setLoading]=useState(true);
- const [tab,setTab]=useState<"dashboard"|"hero"|"pages">("dashboard"),[slides,setSlides]=useState<Slide[]>([]),[pages,setPages]=useState<Page[]>([]),[homepage,setHomepage]=useState<any>({}),[page,setPage]=useState<any>(null),[saving,setSaving]=useState(false);
+ const [tab,setTab]=useState<"dashboard"|"hero"|"pages"|"destinations">("dashboard"),[slides,setSlides]=useState<Slide[]>([]),[pages,setPages]=useState<Page[]>([]),[homepage,setHomepage]=useState<any>({}),[page,setPage]=useState<any>(null),[saving,setSaving]=useState(false),[destinations,setDestinations]=useState<Destination[]>([]),[destination,setDestination]=useState<any>(null);
 
  async function load(){
   setLoading(true);
@@ -24,9 +25,10 @@ export default function AdminPage(){
   const [sl,pg,st,ds]=await Promise.all([
    supabase.from("hero_slides").select("*").order("sort_order"),
    supabase.from("pages").select("*").order("created_at",{ascending:false}),
-   supabase.from("site_settings").select("value").eq("key","homepage").maybeSingle()
+   supabase.from("site_settings").select("value").eq("key","homepage").maybeSingle(),
+   supabase.from("destinations").select("*").order("sort_order")
   ]);
-  setSlides((sl.data??[]) as Slide[]);setPages((pg.data??[]) as Page[]);setHomepage(st.data?.value??{});
+  setSlides((sl.data??[]) as Slide[]);setPages((pg.data??[]) as Page[]);setDestinations((ds.data??[]) as Destination[]);setHomepage(st.data?.value??{});
   setLoading(false);
  }
  useEffect(()=>{load();},[]);
