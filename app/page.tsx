@@ -3,12 +3,13 @@ import { ArrowRight, Compass, Heart, Map, ShieldCheck, Sparkles } from "lucide-r
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import { categories } from "@/lib/content";
+import { getSiteContent } from "@/lib/site-content";
 
-export default function Home() {
+export default async function Home() {\n  const siteContent = await getSiteContent();
   return <>
     <Header />
     <main>
-      <Hero />
+      <Hero content={siteContent} />
       <section className="relative -mt-10 z-20">
         <div className="container-site">
           <div className="glass grid rounded-3xl p-5 shadow-soft md:grid-cols-4 md:p-7">
