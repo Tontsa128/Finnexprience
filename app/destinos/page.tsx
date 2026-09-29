@@ -30,6 +30,18 @@ function localizedPath(locale: Locale, slug: string) {
   return locale === "es" ? "/" + slug : "/" + locale + "/" + slug;
 }
 
+function localizedName(destination: Destination, locale: Locale) {
+  if (locale === "en") return destination.name_en || destination.name_es || destination.slug;
+  if (locale === "fi") return destination.name_fi || destination.name_es || destination.slug;
+  return destination.name_es || destination.slug;
+}
+
+function localizedDescription(destination: Destination, locale: Locale) {
+  if (locale === "en") return destination.description_en || destination.description_es || "";
+  if (locale === "fi") return destination.description_fi || destination.description_es || "";
+  return destination.description_es || "";
+}
+
 export default async function DestinosPage({ locale = "es" }: { locale?: Locale }) {
   const supabase = await createSupabaseServerClient();
   const { data } = supabase
@@ -48,8 +60,8 @@ export default async function DestinosPage({ locale = "es" }: { locale?: Locale 
         <p className="mt-6 max-w-2xl text-lg leading-8 text-black/60">{t.text}</p>
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {destinations.map((destination) => {
-            const name = destination["name_" + locale] || destination.name_es || destination.slug;
-            const description = destination["description_" + locale] || destination.description_es || "";
+            const name = localizedName(destination, locale);
+            const description = localizedDescription(destination, locale);
             return <Link href={localizedPath(locale, destination.slug)} key={destination.slug} className="group overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-black/5">
               <img src={destination.image_url || "/images/hero-summer.svg"} alt={name} className="h-64 w-full object-cover transition duration-700 group-hover:scale-105"/>
               <div className="p-6"><h2 className="font-display text-3xl">{name}</h2><p className="mt-3 text-black/60">{description}</p><span className="mt-6 inline-block font-bold text-pine">{t.discover}</span></div>
