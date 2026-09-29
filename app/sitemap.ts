@@ -1,0 +1,2 @@
+import type { MetadataRoute } from "next";
+export default function sitemap(): MetadataRoute.Sitemap { const base="https://finnexprience.vercel.app"; return ["/","/experiencias","/destinos","/planifica"].map(path=>({url:base+path,lastModified:new Date(),changeFrequency:"weekly",priority:path==="/" ? 1 : .7})); }
