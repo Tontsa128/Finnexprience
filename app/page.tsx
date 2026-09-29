@@ -5,7 +5,8 @@ import Hero from "@/components/Hero";
 import { categories } from "@/lib/content";
 import { getSiteContent } from "@/lib/site-content";
 
-export default async function Home() {\n  const siteContent = await getSiteContent();
+export default async function Home() {
+  const siteContent = await getSiteContent();
   return <>
     <Header />
     <main>
