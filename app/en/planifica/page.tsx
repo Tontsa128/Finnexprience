@@ -1,0 +1,1 @@
+import Planifica from "../../../planifica/page"; export default Planifica;
