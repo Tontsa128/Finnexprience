@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Compass, Heart, Map, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Compass, Heart, Map, ShieldCheck, Sparkles, type LucideIcon } from "lucide-react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import { categories, type Locale } from "@/lib/content";
@@ -120,16 +120,16 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
           </div>
           <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8">
             <div className="grid gap-5 sm:grid-cols-2">
-              {[
-                [Compass, t.inspiration, t.inspirationText],
-                [Map, t.discovery, t.discoveryText],
-                [ShieldCheck, t.clarity, t.clarityText],
-                [Heart, t.moments, t.momentsText],
-              ].map(([Icon, title, description]) => (
-                <div key={title as string}>
-                  {Icon && <Icon className="text-[#e8b28f]" />}
-                  <h3 className="mt-4 font-bold">{title as string}</h3>
-                  <p className="mt-2 text-sm text-white/55">{description as string}</p>
+              {([
+                { Icon: Compass, title: t.inspiration, description: t.inspirationText },
+                { Icon: Map, title: t.discovery, description: t.discoveryText },
+                { Icon: ShieldCheck, title: t.clarity, description: t.clarityText },
+                { Icon: Heart, title: t.moments, description: t.momentsText },
+              ] satisfies Array<{ Icon: LucideIcon; title: string; description: string }>).map(({ Icon, title, description }) => (
+                <div key={title}>
+                  <Icon className="text-[#e8b28f]" />
+                  <h3 className="mt-4 font-bold">{title}</h3>
+                  <p className="mt-2 text-sm text-white/55">{description}</p>
                 </div>
               ))}
             </div>
