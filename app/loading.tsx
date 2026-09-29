@@ -1,0 +1,1 @@
+export default function Loading(){return <main className="grid min-h-screen place-items-center bg-ink text-white"><div className="text-center"><div className="mx-auto h-10 w-10 animate-pulse rounded-full bg-white/20"/><p className="mt-4 text-white/60">Finnexprience…</p></div></main>}
