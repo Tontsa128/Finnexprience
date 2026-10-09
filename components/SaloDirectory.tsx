@@ -1,15 +1,16 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import type { Locale } from "@/lib/content";
-import { localizedSaloPath, saloAreas, saloCategories, saloCopy } from "@/lib/salo-directory";
+import { localizedSaloPath, saloCategories, saloCopy } from "@/lib/salo-directory";
+import { listingsForCategory, saloListings } from "@/lib/salo-listings";
 
 export default function SaloDirectory({ locale = "es", categorySlug, itemSlug }: { locale?: Locale; categorySlug?: string; itemSlug?: string }) {
   const t = saloCopy[locale];
   const category = saloCategories.find((entry) => entry.slug === categorySlug);
-  const area = saloAreas.find((entry) => entry.slug === itemSlug);
-  const title = itemSlug && area && category ? `${category.title[locale]} · ${area.name[locale]}` : category ? category.title[locale] : t.title;
-  const description = itemSlug && area && category ? `${area.description[locale]} ${category.description[locale]}` : category ? category.description[locale] : t.intro;
-  const cards = categorySlug ? saloAreas : saloCategories;
+  const listing = saloListings.find((entry) => entry.slug === itemSlug && entry.category === categorySlug);
+  const title = listing && category ? listing.title[locale] : category ? category.title[locale] : t.title;
+  const description = listing ? listing.description[locale] : category ? category.description[locale] : t.intro;
+  const cards = categorySlug ? listingsForCategory(categorySlug) : saloCategories;
   const backHref = localizedSaloPath(locale, "/salo");
 
   return <>
@@ -32,12 +33,14 @@ export default function SaloDirectory({ locale = "es", categorySlug, itemSlug }:
           {!categorySlug && <h2 className="mt-3 font-display text-3xl md:text-4xl">{t.areas}</h2>}
           <p className="mt-4 leading-7 text-black/60">{t.notice}</p>
         </div>
-        {itemSlug && area && category ? (
+        {listing && category ? (
           <div className="mt-10 max-w-3xl rounded-[1.75rem] border border-black/10 bg-white p-7 md:p-10">
             <div className="eyebrow text-copper">{category.title[locale]}</div>
-            <h2 className="mt-3 font-display text-3xl">{area.name[locale]}</h2>
-            <p className="mt-4 leading-7 text-black/65">{area.description[locale]}</p>
-            <p className="mt-6 rounded-2xl bg-[#f7f7f3] p-5 text-sm leading-6 text-black/65">{t.providerPending}</p>
+            <h2 className="mt-3 font-display text-3xl">{listing.title[locale]}</h2>
+            <p className="mt-4 leading-7 text-black/65">{listing.description[locale]}</p>
+            <p className="mt-4 text-sm font-semibold text-black/60">{listing.location[locale]}</p>
+            {listing.address && <p className="mt-2 text-sm text-black/60">{listing.address}</p>}
+            <a href={listing.officialUrl} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-full bg-pine px-6 py-3 font-extrabold text-white hover:opacity-90">{listing.linkLabel[locale]} ↗</a>
             <Link href={localizedSaloPath(locale, `/salo/${category.slug}`)} className="mt-7 inline-flex font-extrabold text-pine">← {t.back}</Link>
           </div>
         ) : (
@@ -51,12 +54,12 @@ export default function SaloDirectory({ locale = "es", categorySlug, itemSlug }:
               return <Link key={entry.slug} href={href} className="group overflow-hidden rounded-[1.75rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-xl">
                 <div className="relative h-56 overflow-hidden bg-[#e9efe9]">
                   <img src={entry.image} alt={cardTitle} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
-                  <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-extrabold text-ink">{categorySlug ? "SALON SEUTU" : ("icon" in entry ? entry.icon : "")}</span>
+                  <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-extrabold text-ink">{categorySlug ? (category?.title[locale] ?? "SALO") : ("icon" in entry ? entry.icon : "")}</span>
                 </div>
                 <div className="p-6">
                   <h3 className="font-display text-2xl">{cardTitle}</h3>
                   <p className="mt-3 text-sm leading-6 text-black/60">{cardDescription}</p>
-                  <span className="mt-6 inline-flex font-extrabold text-pine">{t.details} →</span>
+                  <span className="mt-6 inline-flex font-extrabold text-pine">{categorySlug && "linkLabel" in entry ? entry.linkLabel[locale] : t.details} →</span>
                 </div>
               </Link>;
             })}
