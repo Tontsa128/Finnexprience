@@ -40,7 +40,7 @@ export default function SaloDirectory({ locale = "es", categorySlug, itemSlug }:
             <p className="mt-4 leading-7 text-black/65">{listing.description[locale]}</p>
             <p className="mt-4 text-sm font-semibold text-black/60">{listing.location[locale]}</p>
             {listing.address && <p className="mt-2 text-sm text-black/60">{listing.address}</p>}
-            <a href={listing.officialUrl} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-full bg-pine px-6 py-3 font-extrabold text-white hover:opacity-90">{listing.linkLabel[locale]} ↗</a>
+            <div className="mt-6 flex flex-wrap gap-3"><a href={listing.officialUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-pine px-6 py-3 font-extrabold text-white hover:opacity-90">{listing.linkLabel[locale]} ↗</a><a href={"https://www.openstreetmap.org/search?query=" + encodeURIComponent(listing.address ?? listing.location[locale])} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-pine px-6 py-3 font-extrabold text-pine hover:bg-pine hover:text-white">{t.map} ↗</a></div>
             <Link href={localizedSaloPath(locale, `/salo/${category.slug}`)} className="mt-7 inline-flex font-extrabold text-pine">← {t.back}</Link>
           </div>
         ) : (
