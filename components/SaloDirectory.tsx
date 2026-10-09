@@ -29,7 +29,7 @@ export default function SaloDirectory({ locale = "es", categorySlug, itemSlug }:
 
       <section className="container-site py-16 md:py-20">
         <div className="max-w-3xl">
-          <div className="eyebrow text-copper">{categorySlug ? t.areas : t.browse}</div>
+          <div className="eyebrow text-copper">{categorySlug ? t.listings : t.browse}</div>
           {!categorySlug && <h2 className="mt-3 font-display text-3xl md:text-4xl">{t.areas}</h2>}
           <p className="mt-4 leading-7 text-black/60">{t.notice}</p>
         </div>
