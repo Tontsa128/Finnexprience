@@ -49,7 +49,7 @@ export default function SaloDirectory({ locale = "es", categorySlug, itemSlug }:
               const href = categorySlug
                 ? localizedSaloPath(locale, `/salo/${categorySlug}/${entry.slug}`)
                 : localizedSaloPath(locale, `/salo/${entry.slug}`);
-              const cardTitle = "title" in entry ? entry.title[locale] : entry.name[locale];
+              const cardTitle = entry.title[locale];
               const cardDescription = entry.description[locale];
               return <Link key={entry.slug} href={href} className="group overflow-hidden rounded-[1.75rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-xl">
                 <div className="relative h-56 overflow-hidden bg-[#e9efe9]">
