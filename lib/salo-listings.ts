@@ -111,8 +111,7 @@ export const saloListings: SaloListing[] = [
     location: { fi: "Salo ja lähialueet", es: "Salo y alrededores", en: "Salo and surrounding areas" },
     image: "/images/hero-summer.svg", officialUrl: "https://visitsalo.fi/en/events/",
     linkLabel: { fi: "Salon tapahtumakalenteri", es: "Calendario de eventos de Salo", en: "Salo events calendar" }
-  }
-
+  },
   {
     slug: "matilda-villas", category: "majoitus",
     title: { fi: "Matilda Villas – mökkiloma meren rannalla", es: "Matilda Villas – casas junto al mar", en: "Matilda Villas – seaside holiday homes" },
