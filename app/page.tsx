@@ -22,7 +22,7 @@ const copy = {
     moments: "Momentos especiales", momentsText: "Viajes alrededor de lo que te importa.",
     regionEyebrow: "Primera región", regionTitle: "Descubre la región de Salo.",
     regionText: "Empieza por Salo: alojamientos, pueblos, gastronomía, naturaleza y experiencias locales en la costa suroeste de Finlandia.",
-    destinations: "Ver destinos", footer: "Authentic Finland · Español · English · Suomi",
+    destinations: "Descubrir Salo", footer: "Authentic Finland · Español · English · Suomi",
   },
   en: {
     localTitle: "Local & authentic", localText: "Places and people who know the real Finland.",
@@ -40,7 +40,7 @@ const copy = {
     moments: "Special moments", momentsText: "Trips shaped around what matters to you.",
     regionEyebrow: "Our first region", regionTitle: "Discover the Salo region.",
     regionText: "Start with Salo: accommodation, villages, local food, nature and experiences along Finland’s southwest coast.",
-    destinations: "View destinations", footer: "Authentic Finland · Español · English · Suomi",
+    destinations: "Explore Salo", footer: "Authentic Finland · Español · English · Suomi",
   },
   fi: {
     localTitle: "Paikallinen ja aito", localText: "Paikat ja ihmiset, jotka tuntevat aidon Suomen.",
@@ -58,7 +58,7 @@ const copy = {
     moments: "Erityiset hetket", momentsText: "Matkoja, jotka rakentuvat sinulle tärkeiden asioiden ympärille.",
     regionEyebrow: "Ensimmäinen alue", regionTitle: "Tutustu Salon seutuun.",
     regionText: "Aloita Salosta: majoitusta, kyliä, paikallista ruokaa, luontoa ja elämyksiä Suomen lounaisrannikolla.",
-    destinations: "Katso kohteet", footer: "Aito Suomi · Español · English · Suomi",
+    destinations: "Tutustu Salon seutuun", footer: "Aito Suomi · Español · English · Suomi",
   },
 } as const;
 
