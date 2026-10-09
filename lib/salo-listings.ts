@@ -109,9 +109,62 @@ export const saloListings: SaloListing[] = [
       en: "Check official tourism information for current events, summer evening markets, autumn pumpkin celebrations and other seasonal highlights."
     },
     location: { fi: "Salo ja lähialueet", es: "Salo y alrededores", en: "Salo and surrounding areas" },
-    image: "/images/hero-summer.svg", officialUrl: "https://visitsalo.fi/en/",
-    linkLabel: { fi: "VisitSalo – tapahtumat ja ajankohtaista", es: "VisitSalo – eventos e información", en: "VisitSalo – events & updates" }
+    image: "/images/hero-summer.svg", officialUrl: "https://visitsalo.fi/en/events/",
+    linkLabel: { fi: "Salon tapahtumakalenteri", es: "Calendario de eventos de Salo", en: "Salo events calendar" }
   }
+
+  {
+    slug: "matilda-villas", category: "majoitus",
+    title: { fi: "Matilda Villas – mökkiloma meren rannalla", es: "Matilda Villas – casas junto al mar", en: "Matilda Villas – seaside holiday homes" },
+    description: {
+      fi: "Mathildedalin historiallisessa ruukkikylässä sijaitseva lomakylä tarjoaa erikokoisia huviloita, oman rannan ja yhteisiä ulkoilualueita. Tarkista varustelu, hinnat ja vapaat päivät suoraan majoittajalta.",
+      es: "Alojamiento vacacional en el histórico pueblo de Mathildedal, con villas de distintos tamaños, playa privada y espacios al aire libre. Consulta equipamiento, precios y disponibilidad con el proveedor.",
+      en: "A holiday village in historic Mathildedal with villas in different sizes, a private beach and shared outdoor spaces. Check facilities, prices and availability directly with the provider."
+    },
+    location: { fi: "Mathildedal, Salo", es: "Mathildedal, Salo", en: "Mathildedal, Salo" },
+    address: "Karvarinkulma 1, 25660 Mathildedal",
+    image: "/images/hero-summer.svg", officialUrl: "https://www.matildavillas.fi/",
+    linkLabel: { fi: "Majoitus ja varaus", es: "Alojamiento y reservas", en: "Accommodation & booking" }
+  },
+  {
+    slug: "sarkisalon-saaristomokit", category: "majoitus",
+    title: { fi: "Särkisalon saaristomökit", es: "Casas rurales del archipiélago de Särkisalo", en: "Särkisalo archipelago cottages" },
+    description: {
+      fi: "Ylöstalon matkailun mökkejä meren äärellä Särkisalossa. Vaihtoehtoihin kuuluu eri kokoisia mökkejä, oma sauna ja rantamaisemia; tarkista mökkikohtaiset tiedot ja hinnat palveluntarjoajalta.",
+      es: "Casas vacacionales junto al mar en Särkisalo, ofrecidas por Ylöstalo. Hay distintas capacidades y opciones con sauna privada; consulta los detalles y precios de cada alojamiento con el proveedor.",
+      en: "Seaside holiday cottages in Särkisalo from Ylöstalo. Options vary in size and include private-sauna cottages; check each cottage’s details and prices with the provider."
+    },
+    location: { fi: "Särkisalo, Salo", es: "Särkisalo, Salo", en: "Särkisalo, Salo" },
+    address: "Iso Keisarin tie, 25630 Salo",
+    image: "/images/hero-archipelago.svg", officialUrl: "https://www.ylostalo.fi/en/vuokramokit",
+    linkLabel: { fi: "Mökit ja varaus", es: "Casas y reservas", en: "Cottages & booking" }
+  },
+  {
+    slug: "matildanjarven-mokit", category: "majoitus",
+    title: { fi: "Matildanjärven erämökit", es: "Cabañas junto al lago Matildanjärvi", en: "Matildanjärvi wilderness cabins" },
+    description: {
+      fi: "Vaappu- ja Lippa-mökit sijaitsevat Teijon kansallispuistossa Matildanjärven rannalla. Perinteinen luontomajoitus sopii retkeilijöille; tarkista veden, peseytymisen ja saunavuorojen käytännöt sekä varausehdot ennen varausta.",
+      es: "Las cabañas Vaappu y Lippa están junto al lago Matildanjärvi, dentro del Parque Nacional de Teijo. Antes de reservar, consulta las condiciones de agua, duchas, sauna y alojamiento.",
+      en: "Vaappu and Lippa cabins sit beside Lake Matildanjärvi in Teijo National Park. Before booking, check the practical details for water, washing facilities, sauna access and reservation terms."
+    },
+    location: { fi: "Teijon kansallispuisto, Salo", es: "Parque Nacional de Teijo, Salo", en: "Teijo National Park, Salo" },
+    address: "Matildanjärventie 84, 25660 Salo",
+    image: "/images/hero-sauna.svg", officialUrl: "https://kohteet.visitsalo.fi/en/matildanjarvi-cabins-in-teijo-national-park/",
+    linkLabel: { fi: "Mökkitiedot ja varaus", es: "Información y reservas", en: "Cabin information & booking" }
+  },
+  {
+    slug: "vuohensaari-camping", category: "majoitus",
+    title: { fi: "Vuohensaari Camping", es: "Camping Vuohensaari", en: "Vuohensaari Camping" },
+    description: {
+      fi: "Merellinen leirintäalue lähellä Salon keskustaa: tarjolla on teltta- ja matkailuajoneuvopaikkoja sekä mökki- ja huonemajoitusta. Tarkista kausipalvelut, hinnat ja saatavuus suoraan alueelta.",
+      es: "Camping junto al mar cerca del centro de Salo, con parcelas para tiendas y vehículos recreativos, además de cabañas y habitaciones. Consulta temporadas, precios y disponibilidad directamente.",
+      en: "A seaside campsite close to central Salo, with tent and motorhome pitches as well as cabins and rooms. Check seasonal services, prices and availability directly with the campsite."
+    },
+    location: { fi: "Vuohensaari, Salo", es: "Vuohensaari, Salo", en: "Vuohensaari, Salo" },
+    address: "Satamakatu 102, 24100 Salo",
+    image: "/images/hero-archipelago.svg", officialUrl: "https://www.vuohensaari.fi/camping/",
+    linkLabel: { fi: "Majoitus ja varaus", es: "Alojamiento y reservas", en: "Accommodation & booking" }
+  },
 ];
 
 export const listingsForCategory = (category: string) => saloListings.filter((listing) => listing.category === category);
