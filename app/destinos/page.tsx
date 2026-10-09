@@ -21,9 +21,9 @@ const fallbackDestinations: Destination[] = [
 ];
 
 const copy: Record<Locale, { eyebrow:string; title:string; text:string; discover:string }> = {
-  es: { eyebrow:"Destinos", title:"Lugares que merecen ser vividos.", text:"Empezamos en Salo, Mathildedal y Teijo. La plataforma está preparada para crecer por todo el suroeste de Finlandia y, después, por todo el país.", discover:"Descubrir →" },
-  en: { eyebrow:"Destinations", title:"Places worth experiencing.", text:"We start in Salo, Mathildedal and Teijo. The platform is built to grow across Southwest Finland and, later, the rest of the country.", discover:"Discover →" },
-  fi: { eyebrow:"Kohteet", title:"Paikkoja, jotka kannattaa kokea.", text:"Aloitamme Salosta, Mathildedalista ja Teijosta. Alusta on valmis kasvamaan koko Lounais-Suomeen ja myöhemmin muualle Suomeen.", discover:"Tutustu →" },
+  es: { eyebrow:"Destinos", title:"Lugares que merecen ser vividos.", text:"Empieza por Salo y descubre alojamientos, gastronomía, naturaleza y pueblos locales. Desde aquí seguimos ampliando el directorio por Varsinais-Suomi y Finlandia.", discover:"Descubrir →" },
+  en: { eyebrow:"Destinations", title:"Places worth experiencing.", text:"Start with Salo and discover accommodation, food, nature and local villages. The directory will expand across Southwest Finland and the rest of Finland.", discover:"Discover →" },
+  fi: { eyebrow:"Kohteet", title:"Paikkoja, jotka kannattaa kokea.", text:"Aloita Salosta ja löydä majoitusta, ruokaa, luontoa ja paikallisia kyliä. Hakemisto laajenee vaiheittain koko Varsinais-Suomeen ja muualle Suomeen.", discover:"Tutustu →" },
 };
 
 function localizedPath(locale: Locale, slug: string) {
@@ -48,7 +48,7 @@ export default async function DestinosPage({ locale = "es" }: { locale?: Locale 
     ? await supabase.from("destinations").select("*").eq("published", true).order("sort_order")
     : { data: null };
 
-  const destinations = (data as Destination[] | null) ?? fallbackDestinations;
+  const destinations = [...(((data as Destination[] | null) ?? fallbackDestinations))].sort((a, b) => a.slug === "salo" ? -1 : b.slug === "salo" ? 1 : 0);
   const t = copy[locale];
 
   return <>
