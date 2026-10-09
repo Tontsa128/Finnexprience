@@ -17,7 +17,7 @@ export default function SaloDirectory({ locale = "es", categorySlug, itemSlug }:
     <Header />
     <main className="pt-24">
       <section className="relative overflow-hidden bg-pine text-white">
-        <img src={category?.image ?? (area?.image ?? "/images/hero-archipelago.svg")} alt={locale === "fi" ? "Salon seudun rannikko ja luonto" : locale === "es" ? "Costa y naturaleza de la región de Salo" : "Coast and nature in the Salo region"} className="absolute inset-0 h-full w-full object-cover opacity-55" />
+        <img src={category?.image ?? (listing?.image ?? "/images/hero-archipelago.svg")} alt={locale === "fi" ? "Salon seudun rannikko ja luonto" : locale === "es" ? "Costa y naturaleza de la región de Salo" : "Coast and nature in the Salo region"} className="absolute inset-0 h-full w-full object-cover opacity-55" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#071915]/90 via-[#071915]/65 to-[#071915]/25" />
         <div className="container-site relative py-20 md:py-28">
           <div className="eyebrow text-[#e8b28f]">{t.eyebrow}</div>
