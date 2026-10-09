@@ -48,7 +48,9 @@ export default async function DestinosPage({ locale = "es" }: { locale?: Locale 
     ? await supabase.from("destinations").select("*").eq("published", true).order("sort_order")
     : { data: null };
 
-  const destinations = [...(((data as Destination[] | null) ?? fallbackDestinations))].sort((a, b) => a.slug === "salo" ? -1 : b.slug === "salo" ? 1 : 0);
+  const allDestinations = (data as Destination[] | null) ?? fallbackDestinations;
+  const hasSalo = allDestinations.some((destination) => destination.slug === "salo");
+  const destinations = [...allDestinations.filter((destination) => !(hasSalo && ["mathildedal", "teijo"].includes(destination.slug)))].sort((a, b) => a.slug === "salo" ? -1 : b.slug === "salo" ? 1 : 0);
   const t = copy[locale];
 
   return <>
