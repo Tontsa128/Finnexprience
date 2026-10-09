@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Header from "@/components/Header";
+import SaloMap from "@/components/SaloMap";
 import type { Locale } from "@/lib/content";
 import { localizedSaloPath, saloCategories, saloCopy } from "@/lib/salo-directory";
 import { listingsForCategory, saloListings } from "@/lib/salo-listings";
@@ -33,6 +34,7 @@ export default function SaloDirectory({ locale = "es", categorySlug, itemSlug }:
           {!categorySlug && <h2 className="mt-3 font-display text-3xl md:text-4xl">{t.areas}</h2>}
           <p className="mt-4 leading-7 text-black/60">{t.notice}</p>
         </div>
+        {!listing && <SaloMap locale={locale} />}
         {listing && category ? (
           <div className="mt-10 max-w-3xl rounded-[1.75rem] border border-black/10 bg-white p-7 md:p-10">
             <div className="eyebrow text-copper">{category.title[locale]}</div>
