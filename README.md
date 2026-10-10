@@ -71,7 +71,9 @@ The goal is for the site owner to manage content without editing source code for
 - The admin UI is in `app/admin/page.tsx`.
 - Browser-side Supabase configuration is in `lib/supabase-browser.ts`.
 - The Salo directory data is currently represented in code in `lib/salo-directory.ts` and `lib/salo-listings.ts`; adding or changing those records currently requires a code update unless/until the CMS data layer is connected.
-- The admin page expects Supabase. A missing-configuration fallback prevents the build from failing, but **does not** make login, database persistence or image upload work by itself.
+- The admin page has UI flows for homepage hero-image upload, destination-image upload/preview, multilingual homepage hero text, page editing, destination records and incoming trip requests.
+- The admin expects Supabase. A missing-configuration fallback prevents the build from failing, but **does not** make login, database persistence or image upload work by itself.
+- Salo destination/area directory entries in `lib/salo-directory.ts` and curated listings in `lib/salo-listings.ts` remain code-managed. CMS destinations in Supabase are a separate data path; confirm the public pages read those CMS records before assuming that editing a record updates every directory page.
 - To enable the admin for production, create/configure the Supabase project, apply the required database migrations, configure secure Row Level Security policies and storage policies, and set the environment variables in Vercel. Never commit secrets or expose a `service_role` key in browser code.
 
 Required Vercel environment variables:
