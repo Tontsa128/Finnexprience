@@ -23,9 +23,9 @@ These official tourism sources are starting points for research and outbound lin
 |---|---|---|
 | Visit Salo | https://visitsalo.fi/ | Main destination source for Salo, Teijo, Mathildedal, villages, local events and routes. |
 | Visit Mathildedal | https://visitmathildedal.fi/ | The ironworks village, accommodation, local services, arrival information and waterfront experiences. |
-| Visit Perniö | https://visitsalo.fi/ | Treat Perniö as a Salo-area destination; verify individual attractions and providers before adding links. |
+| Visit Perniö | https://visitsalo.fi/location/pernio/ | Treat Perniö as a Salo-area destination; verify individual attractions and providers before adding links. |
 | Visit Kemiönsaari | https://www.visitkimitoon.fi/fi/ | Nearby archipelago, accommodation, food, events, transport and island experiences. |
-| Särkisalo / Särkisalo and the sea | https://visitsalo.fi/ | Salo's coastal and island village area; verify local services and seasonal availability. |
+| Särkisalo / Särkisalo and the sea | https://visitsalo.fi/en/sarkisalo-and-the-sea/ | Salo's coastal and island village area; verify local services and seasonal availability. |
 | Visit Finland | https://www.visitfinland.com/ | National-level inspiration and verified destination/product context. |
 
 Research observations:
