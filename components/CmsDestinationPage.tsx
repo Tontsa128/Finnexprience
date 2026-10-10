@@ -37,7 +37,7 @@ export default async function CmsDestinationPage({ locale, slug }: { locale: Loc
   const description = locale === "fi" ? destination.description_fi : locale === "en" ? destination.description_en : destination.description_es;
   const t = saloCopy[locale];
   const image = destination.image_url || "/images/hero-summer.svg";
-  const providerUrl = destination.provider_url && /^https?:\\/\\//i.test(destination.provider_url) ? destination.provider_url : null;
+  const providerUrl = (() => { try { const url = new URL(destination.provider_url || ""); return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null; } catch { return null; } })();
 
   return <>
     <Header />
