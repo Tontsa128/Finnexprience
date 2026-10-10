@@ -1,6 +1,29 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import SaloDirectory from "@/components/SaloDirectory";
 import { saloAreas, saloCategories } from "@/lib/salo-directory";
+
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
+  const { category: slug } = await params;
+  const category = saloCategories.find((entry) => entry.slug === slug);
+  const area = saloAreas.find((entry) => entry.slug === slug);
+  const title = category ? entry.title.fi : area ? entry.name.fi : "Salo";
+  const description = category ? entry.description.fi : area ? entry.description.fi : "";
+  const canonical = `/fi/salo/${slug}`;
+  return {
+    title: `${title} | Finnexprience`,
+    description,
+    alternates: {
+      canonical,
+      languages: {
+        es: `/salo/${slug}`,
+        fi: `/fi/salo/${slug}`,
+        en: `/en/salo/${slug}`,
+      },
+    },
+    openGraph: { title: `${title} | Finnexprience`, description, type: "website", url: canonical },
+  };
+}
 
 export function generateStaticParams() {
   return [...saloCategories, ...saloAreas].map(({ slug }) => ({ category: slug }));
