@@ -7,8 +7,8 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category: slug } = await params;
   const category = saloCategories.find((entry) => entry.slug === slug);
   const area = saloAreas.find((entry) => entry.slug === slug);
-  const title = category ? entry.title.en : area ? entry.name.en : "Salo";
-  const description = category ? entry.description.en : area ? entry.description.en : "";
+  const title = category ? category.title.en : area ? area.name.en : "Salo";
+  const description = category ? category.description.en : area ? area.description.en : "";
   const canonical = `/en/salo/${slug}`;
   return {
     title: `${title} | Finnexprience`,
