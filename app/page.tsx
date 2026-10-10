@@ -20,9 +20,9 @@ const copy = {
     discovery: "Descubrimiento", discoveryText: "Explora destinos y servicios locales.",
     clarity: "Información clara", clarityText: "Datos que pueden verificarse antes de reservar.",
     moments: "Momentos especiales", momentsText: "Viajes alrededor de lo que te importa.",
-    regionEyebrow: "Primera región", regionTitle: "Salo, Mathildedal y la costa del suroeste.",
-    regionText: "Nuestro punto de partida: una Finlandia cercana, tranquila y llena de historias. Después, el concepto puede crecer hacia todo Varsinais-Suomi y el resto del país.",
-    destinations: "Ver destinos", footer: "Authentic Finland · Español · English · Suomi",
+    regionEyebrow: "Primera región", regionTitle: "Descubre la región de Salo.",
+    regionText: "Empieza por Salo: alojamientos, pueblos, gastronomía, naturaleza y experiencias locales en la costa suroeste de Finlandia.",
+    destinations: "Descubrir Salo", footer: "Authentic Finland · Español · English · Suomi",
   },
   en: {
     localTitle: "Local & authentic", localText: "Places and people who know the real Finland.",
@@ -38,9 +38,9 @@ const copy = {
     discovery: "Discovery", discoveryText: "Explore destinations and local services.",
     clarity: "Clear information", clarityText: "Information that can be verified before booking.",
     moments: "Special moments", momentsText: "Trips shaped around what matters to you.",
-    regionEyebrow: "Our first region", regionTitle: "Salo, Mathildedal and the southwest coast.",
-    regionText: "Our starting point: a close, peaceful Finland full of stories. The concept can then grow across Southwest Finland and the rest of the country.",
-    destinations: "View destinations", footer: "Authentic Finland · Español · English · Suomi",
+    regionEyebrow: "Our first region", regionTitle: "Discover the Salo region.",
+    regionText: "Start with Salo: accommodation, villages, local food, nature and experiences along Finland’s southwest coast.",
+    destinations: "Explore Salo", footer: "Authentic Finland · Español · English · Suomi",
   },
   fi: {
     localTitle: "Paikallinen ja aito", localText: "Paikat ja ihmiset, jotka tuntevat aidon Suomen.",
@@ -56,9 +56,9 @@ const copy = {
     discovery: "Löytäminen", discoveryText: "Tutustu kohteisiin ja paikallisiin palveluihin.",
     clarity: "Selkeä tieto", clarityText: "Tietoa, jonka voi tarkistaa ennen varaamista.",
     moments: "Erityiset hetket", momentsText: "Matkoja, jotka rakentuvat sinulle tärkeiden asioiden ympärille.",
-    regionEyebrow: "Ensimmäinen alue", regionTitle: "Salo, Mathildedal ja lounaisrannikko.",
-    regionText: "Lähtöpisteemme on lähellä, rauhallinen ja tarinoita täynnä oleva Suomi. Seuraavaksi konsepti voi kasvaa koko Varsinais-Suomeen ja myöhemmin koko maahan.",
-    destinations: "Katso kohteet", footer: "Aito Suomi · Español · English · Suomi",
+    regionEyebrow: "Ensimmäinen alue", regionTitle: "Tutustu Salon seutuun.",
+    regionText: "Aloita Salosta: majoitusta, kyliä, paikallista ruokaa, luontoa ja elämyksiä Suomen lounaisrannikolla.",
+    destinations: "Tutustu Salon seutuun", footer: "Aito Suomi · Español · English · Suomi",
   },
 } as const;
 
@@ -138,14 +138,18 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
       </section>
 
       <section className="container-site py-24">
-        <div className="rounded-[2rem] bg-[#e9efe9] p-8 md:p-14">
-          <div className="max-w-3xl">
+        <Link href={prefix + "/salo"} className="group grid overflow-hidden rounded-[2rem] bg-[#e9efe9] shadow-sm ring-1 ring-black/5 transition hover:shadow-xl md:grid-cols-2">
+          <div className="relative min-h-[300px] overflow-hidden md:min-h-[440px]">
+            <img src="/images/hero-archipelago.svg" alt={locale === "fi" ? "Salon seudun rannikko ja saaristomaisema" : locale === "en" ? "Coastline and archipelago near Salo" : "Costa y archipiélago cerca de Salo"} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+            <span className="absolute left-6 top-6 rounded-full bg-white/90 px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-ink">Salo · Varsinais-Suomi</span>
+          </div>
+          <div className="flex flex-col items-start justify-center p-8 md:p-12 lg:p-16">
             <div className="eyebrow text-moss">{t.regionEyebrow}</div>
             <h2 className="mt-3 font-display text-4xl md:text-6xl">{t.regionTitle}</h2>
             <p className="mt-5 text-lg leading-8 text-black/60">{t.regionText}</p>
-            <Link href={prefix + "/destinos"} className="mt-8 inline-flex items-center gap-2 font-extrabold text-pine">{t.destinations} <ArrowRight size={18}/></Link>
+            <span className="mt-8 inline-flex items-center gap-2 rounded-full bg-pine px-6 py-4 font-extrabold text-white">{t.destinations} <ArrowRight size={18} className="transition group-hover:translate-x-1"/></span>
           </div>
-        </div>
+        </Link>
       </section>
     </main>
     <footer className="border-t border-black/10 py-10">
