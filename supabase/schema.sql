@@ -126,6 +126,7 @@ create table if not exists destinations (
   description_fi text not null default '',
   image_url text,
   category text not null default 'destination',
+  provider_url text,
   featured boolean not null default false,
   published boolean not null default false,
   sort_order integer not null default 0,
@@ -133,6 +134,7 @@ create table if not exists destinations (
   updated_at timestamptz not null default now()
 );
 
+alter table destinations add column if not exists provider_url text;
 alter table destinations enable row level security;
 drop policy if exists "public can read published destinations" on destinations;
 create policy "public can read published destinations" on destinations for select using (published = true or public.is_admin());
