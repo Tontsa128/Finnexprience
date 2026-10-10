@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import SaloMap from "@/components/SaloMap";
@@ -18,7 +19,7 @@ export default function SaloDirectory({ locale = "es", categorySlug, itemSlug }:
     <Header />
     <main className="pt-24">
       <section className="relative overflow-hidden bg-pine text-white">
-        <img src={listing?.image ?? (category?.image ?? "/images/hero-archipelago.svg")} alt={locale === "fi" ? "Salon seudun rannikko ja luonto" : locale === "es" ? "Costa y naturaleza de la región de Salo" : "Coast and nature in the Salo region"} className="absolute inset-0 h-full w-full object-cover opacity-55" />
+        <Image src={listing?.image ?? (category?.image ?? "/images/hero-archipelago.svg")} alt={locale === "fi" ? "Salon seudun rannikko ja luonto" : locale === "es" ? "Costa y naturaleza de la región de Salo" : "Coast and nature in the Salo region"} fill priority sizes="100vw" className="object-cover opacity-55" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#071915]/90 via-[#071915]/65 to-[#071915]/25" />
         <div className="container-site relative py-20 md:py-28">
           <div className="eyebrow text-[#e8b28f]">{t.eyebrow}</div>
@@ -55,7 +56,7 @@ export default function SaloDirectory({ locale = "es", categorySlug, itemSlug }:
               const cardDescription = entry.description[locale];
               return <Link key={entry.slug} href={href} className="group overflow-hidden rounded-[1.75rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-xl">
                 <div className="relative h-56 overflow-hidden bg-[#e9efe9]">
-                  <img src={entry.image} alt={cardTitle} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <Image src={entry.image} alt={cardTitle} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
                   <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-extrabold text-ink">{categorySlug ? (category?.title[locale] ?? "SALO") : ("icon" in entry ? entry.icon : "")}</span>
                 </div>
                 <div className="p-6">
