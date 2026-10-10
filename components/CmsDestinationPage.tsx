@@ -16,6 +16,7 @@ type Destination = {
   description_en: string;
   description_fi: string;
   image_url: string | null;
+  provider_url: string | null;
   category: string;
 };
 
@@ -25,7 +26,7 @@ export default async function CmsDestinationPage({ locale, slug }: { locale: Loc
 
   const { data, error } = await supabase
     .from("destinations")
-    .select("slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,category")
+    .select("slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,provider_url,category")
     .eq("slug", slug)
     .eq("published", true)
     .maybeSingle();
@@ -36,6 +37,7 @@ export default async function CmsDestinationPage({ locale, slug }: { locale: Loc
   const description = locale === "fi" ? destination.description_fi : locale === "en" ? destination.description_en : destination.description_es;
   const t = saloCopy[locale];
   const image = destination.image_url || "/images/hero-summer.svg";
+  const providerUrl = destination.provider_url && /^https?:\\/\\//i.test(destination.provider_url) ? destination.provider_url : null;
 
   return <>
     <Header />
@@ -55,6 +57,7 @@ export default async function CmsDestinationPage({ locale, slug }: { locale: Loc
           <div className="eyebrow text-copper">{t.listings}</div>
           <h2 className="mt-3 font-display text-3xl">{title}</h2>
           <p className="mt-4 leading-7 text-black/65">{description}</p>
+          {providerUrl && <a href={providerUrl} target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex rounded-full bg-pine px-6 py-3 font-extrabold text-white hover:opacity-90">{locale === "fi" ? "Siirry palveluntarjoajan sivuille" : locale === "es" ? "Visitar la web del proveedor" : "Visit provider website"} ↗</a>}
           <p className="mt-6 text-sm text-black/50">{t.notice}</p>
           <Link href={localizedSaloPath(locale, "/salo")} className="mt-7 inline-flex rounded-full bg-pine px-6 py-3 font-extrabold text-white">{t.back}</Link>
         </div>
