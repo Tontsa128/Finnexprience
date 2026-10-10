@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 import { FileText, ImagePlus, LayoutDashboard, LogIn, Plus, Save, Trash2, Upload, X, MapPin, Inbox } from "lucide-react";
 
@@ -12,11 +12,13 @@ type Destination={id:string;slug:string;name_es:string;name_en:string;name_fi:st
 const emptyPage={slug:"",title_es:"",title_en:"",title_fi:"",content_es:"",content_en:"",content_fi:"",hero_image:"",published:false};
 
 export default function AdminPage(){
- const supabase=createSupabaseBrowserClient();
+ const supabaseConfigured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+ const supabase = useMemo(() => supabaseConfigured ? createSupabaseBrowserClient() : null, [supabaseConfigured]) as ReturnType<typeof createSupabaseBrowserClient>;
  const [session,setSession]=useState<any>(null),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[error,setError]=useState(""),[loading,setLoading]=useState(true);
  const [tab,setTab]=useState<"dashboard"|"hero"|"pages"|"destinations"|"requests">("dashboard"),[slides,setSlides]=useState<Slide[]>([]),[pages,setPages]=useState<Page[]>([]),[homepage,setHomepage]=useState<any>({}),[page,setPage]=useState<any>(null),[saving,setSaving]=useState(false),[destinations,setDestinations]=useState<Destination[]>([]),[requests,setRequests]=useState<TripRequest[]>([]),[destination,setDestination]=useState<any>(null);
 
  async function load(){
+  if(!supabaseConfigured){setLoading(false);return;}
   setLoading(true);
   const {data:{session:s}}=await supabase.auth.getSession();
   if(!s){setSession(null);setLoading(false);return;}
@@ -34,6 +36,8 @@ export default function AdminPage(){
   setLoading(false);
  }
  useEffect(()=>{load();},[]);
+
+ if(!supabaseConfigured)return <main className="grid min-h-screen place-items-center bg-ink px-5 text-white"><section className="max-w-xl rounded-3xl border border-white/10 bg-white/5 p-8"><div className="text-2xl font-extrabold">Finn<span className="text-[#e8b28f]">exprience</span></div><h1 className="mt-6 text-3xl font-extrabold">Hallinta ei ole vielä yhdistetty</h1><p className="mt-4 leading-7 text-white/70">Sivuston rakentaminen onnistuu, mutta hallintapaneeli tarvitsee Supabase-yhteyden kirjautumista ja sisällön tallennusta varten. Lisää Vercelin Project Settings → Environment Variables -kohtaan muuttujat NEXT_PUBLIC_SUPABASE_URL ja NEXT_PUBLIC_SUPABASE_ANON_KEY sekä Preview- että Production-ympäristöihin. Käynnistä sen jälkeen uusi deployment.</p><p className="mt-4 text-sm text-white/50">Älä lisää avaimia GitHub-koodiin. Älä käytä service_role-avainta selaimessa.</p><a href="https://supabase.com/dashboard" target="_blank" rel="noreferrer" className="mt-6 inline-flex rounded-full bg-[#e8b28f] px-5 py-3 font-bold text-ink">Avaa Supabase Dashboard</a></section></main>;
 
  async function login(){
   setError("");setLoading(true);
