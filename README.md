@@ -74,7 +74,23 @@ The goal is for the site owner to manage content without editing source code for
 - The admin page has UI flows for homepage hero-image upload, destination-image upload/preview, multilingual homepage hero text, page editing, destination records and incoming trip requests.
 - The admin expects Supabase. A missing-configuration fallback prevents the build from failing, but **does not** make login, database persistence or image upload work by itself.
 - Salo destination/area directory entries in `lib/salo-directory.ts` and curated listings in `lib/salo-listings.ts` remain code-managed. CMS destinations in Supabase are a separate data path; confirm the public pages read those CMS records before assuming that editing a record updates every directory page.
-- To enable the admin for production, create/configure the Supabase project, apply the required database migrations, configure secure Row Level Security policies and storage policies, and set the environment variables in Vercel. Never commit secrets or expose a `service_role` key in browser code.
+- To enable the admin for production, configure Supabase and Vercel using the checklist below. Never commit secrets or expose a `service_role` key in browser code.
+
+### Supabase and admin setup checklist
+
+1. Create a Supabase project and open its **SQL Editor**.
+2. Run the complete `supabase/schema.sql` script. It creates the application tables, Row Level Security policies, the public `media` image bucket (10 MiB upload limit; JPEG, PNG, WebP and AVIF), and policies that allow public image reads but restrict uploads, updates and deletes to signed-in users listed as admins.
+3. In Supabase **Authentication → Users**, create the owner login account and copy its user UUID.
+4. In the SQL Editor, register that account as an admin. Replace the sample UUID and email with the values from your account:
+   ```sql
+   insert into public.admin_users (user_id, email)
+   values ('AUTH-USER-UUID', 'owner@example.com')
+   on conflict (user_id) do update set email = excluded.email;
+   ```
+5. Add the two public client environment variables below in Vercel for both **Preview** and **Production**. Use the Supabase project URL and its publishable/anon key; never use the service-role key in the browser.
+6. Redeploy and test `/admin`: sign in, upload an image, save a change, reload and verify that it persists. Also check that an unauthenticated visitor cannot write to the database or upload/delete media.
+
+If the SQL script reports an error involving Supabase Storage permissions, stop and inspect the error before granting broader privileges. Do not work around a policy error by making all storage writes public.
 
 Required Vercel environment variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
