@@ -89,6 +89,18 @@ export const saloListings: SaloListing[] = [
     linkLabel: { fi: "Tutustu Salon alueisiin", es: "Explorar la región de Salo", en: "Explore the Salo region" }
   },
   {
+    slug: "kemionsaari-virallinen-matkailu", category: "saaristo",
+    title: { fi: "Visit Kemiönsaari – saariston opas", es: "Visit Kemiönsaari – guía del archipiélago", en: "Visit Kemiönsaari – archipelago guide" },
+    description: {
+      fi: "Tutustu Kemiönsaaren viralliseen matkailuoppaaseen: majoitukseen, paikalliseen ruokaan, tapahtumiin, luontokohteisiin, aktiviteetteihin ja kulkuyhteyksiin. Tarkista ajantasaiset tiedot alkuperäisestä lähteestä.",
+      es: "Consulta la guía turística oficial de Kemiönsaari para encontrar alojamiento, gastronomía local, eventos, naturaleza, actividades y conexiones de transporte. Verifica la información actualizada en la fuente original.",
+      en: "Explore the official Kemiönsaari tourism guide for accommodation, local food, events, nature, activities and transport connections. Check current details on the original source."
+    },
+    location: { fi: "Kemiönsaari, Varsinais-Suomi", es: "Kemiönsaari, Finlandia suroccidental", en: "Kemiönsaari, Southwest Finland" },
+    image: "/images/hero-archipelago.svg", officialUrl: "https://www.visitkimitoon.fi/fi/",
+    linkLabel: { fi: "Avaa Visit Kemiönsaari", es: "Abrir Visit Kemiönsaari", en: "Open Visit Kemiönsaari" }
+  },
+  {
     slug: "saaristoreitit", category: "saaristo",
     title: { fi: "Rannikko- ja saaristoreitit", es: "Rutas costeras y del archipiélago", en: "Coastal & archipelago routes" },
     description: {
