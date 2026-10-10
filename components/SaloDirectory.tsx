@@ -3,10 +3,16 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import SaloMap from "@/components/SaloMap";
 import type { Locale } from "@/lib/content";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { localizedSaloPath, saloAreas, saloCategories, saloCopy } from "@/lib/salo-directory";
 import { listingsForCategory, saloListings } from "@/lib/salo-listings";
 
-export default function SaloDirectory({ locale = "es", categorySlug, areaSlug, itemSlug }: { locale?: Locale; categorySlug?: string; areaSlug?: string; itemSlug?: string }) {
+export default async function SaloDirectory({ locale = "es", categorySlug, areaSlug, itemSlug }: { locale?: Locale; categorySlug?: string; areaSlug?: string; itemSlug?: string }) {
+  const supabase = await createSupabaseServerClient();
+  const { data: cmsDestinations } = supabase
+    ? await supabase.from("destinations").select("slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,featured,category").eq("published", true).order("sort_order", { ascending: true })
+    : { data: [] as any[] };
+  const publishedDestinations = cmsDestinations ?? [];
   const t = saloCopy[locale];
   const category = saloCategories.find((entry) => entry.slug === categorySlug);
   const area = saloAreas.find((entry) => entry.slug === areaSlug);
@@ -70,6 +76,34 @@ export default function SaloDirectory({ locale = "es", categorySlug, areaSlug, i
             })}
           </div>
         )}
+
+        {!categorySlug && !areaSlug && !listing && publishedDestinations.length > 0 && <div className="mt-16">
+          <div className="max-w-3xl">
+            <div className="eyebrow text-copper">{t.listings}</div>
+            <h2 className="mt-3 font-display text-3xl md:text-4xl">{locale === "fi" ? "Suositellut kohteet" : locale === "es" ? "Destinos seleccionados" : "Featured destinations"}</h2>
+            <p className="mt-4 leading-7 text-black/60">{locale === "fi" ? "Kohteet ja esittelyt, jotka on julkaistu Finnexpriencen hallinnassa." : locale === "es" ? "Lugares y descripciones publicados desde el panel de Finnexprience." : "Places and descriptions published from the Finnexprience admin panel."}</p>
+          </div>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {publishedDestinations.map((destination: { slug: string; name_es: string; name_en: string; name_fi: string; region: string; description_es: string; description_en: string; description_fi: string; image_url: string | null; featured: boolean }) => {
+              const cardTitle = locale === "fi" ? destination.name_fi : locale === "en" ? destination.name_en : destination.name_es;
+              const cardDescription = locale === "fi" ? destination.description_fi : locale === "en" ? destination.description_en : destination.description_es;
+              const detailPath = locale === "fi" ? "/salo/kohteet/" : locale === "en" ? "/salo/destinations/" : "/salo/destinos/";
+              const href = localizedSaloPath(locale, detailPath + destination.slug);
+              return <Link key={destination.slug} href={href} className="group overflow-hidden rounded-[1.75rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-xl">
+                <div className="relative h-56 overflow-hidden bg-[#e9efe9]">
+                  <Image src={destination.image_url || "/images/hero-summer.svg"} alt={cardTitle || destination.region || "Finnexprience destination"} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
+                  {destination.featured && <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-extrabold text-ink">{locale === "fi" ? "Suositeltu" : locale === "es" ? "Destacado" : "Featured"}</span>}
+                </div>
+                <div className="p-6">
+                  <p className="text-xs font-bold uppercase tracking-wider text-copper">{destination.region}</p>
+                  <h3 className="mt-2 font-display text-2xl">{cardTitle || destination.slug}</h3>
+                  <p className="mt-3 text-sm leading-6 text-black/60">{cardDescription}</p>
+                  <span className="mt-6 inline-flex font-extrabold text-pine">{t.details} →</span>
+                </div>
+              </Link>;
+            })}
+          </div>
+        </div>
 
         {!categorySlug && !areaSlug && !listing && <div className="mt-16">
           <div className="eyebrow text-copper">{t.areas}</div>
