@@ -26,6 +26,7 @@ export default function SaloDirectory({ locale = "es", categorySlug, areaSlug, i
           <div className="eyebrow text-[#e8b28f]">{t.eyebrow}</div>
           <h1 className="mt-4 max-w-4xl font-display text-5xl leading-tight md:text-7xl">{title}</h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/85">{description}</p>
+          {area && <a href={area.officialUrl} target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex rounded-full bg-[#e8b28f] px-6 py-3 font-extrabold text-[#071915] transition hover:bg-white">{locale === "fi" ? "Virallinen matkailusivusto" : locale === "es" ? "Web turística oficial" : "Official tourism website"} ↗</a>}
           {(categorySlug || areaSlug) && <Link href={backHref} className="mt-8 inline-flex rounded-full border border-white/50 px-5 py-3 font-bold hover:bg-white hover:text-ink">← {t.back}</Link>}
         </div>
       </section>
@@ -72,7 +73,7 @@ export default function SaloDirectory({ locale = "es", categorySlug, areaSlug, i
 
         {!categorySlug && !areaSlug && !listing && <div className="mt-16">
           <div className="eyebrow text-copper">{t.areas}</div>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {saloAreas.map((entry) => <Link key={entry.slug} href={localizedSaloPath(locale, `/salo/${entry.slug}`)} className="group overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-lg">
               <div className="relative h-40 overflow-hidden bg-[#e9efe9]">
                 <Image src={entry.image} alt={entry.name[locale]} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-700 group-hover:scale-105" />
