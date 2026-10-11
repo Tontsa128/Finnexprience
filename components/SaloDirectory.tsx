@@ -10,7 +10,7 @@ import { listingsForCategory, saloListings } from "@/lib/salo-listings";
 export default async function SaloDirectory({ locale = "es", categorySlug, areaSlug, itemSlug }: { locale?: Locale; categorySlug?: string; areaSlug?: string; itemSlug?: string }) {
   const supabase = await createSupabaseServerClient();
   const { data: cmsDestinations } = supabase
-    ? await supabase.from("destinations").select("slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,featured,category").eq("published", true).order("sort_order", { ascending: true })
+    ? await supabase.from("destinations").select("slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,featured,category,parent_id").is("parent_id", null).eq("published", true).order("sort_order", { ascending: true })
     : { data: [] as any[] };
   const publishedDestinations = cmsDestinations ?? [];
   const t = saloCopy[locale];
