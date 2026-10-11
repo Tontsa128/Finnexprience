@@ -103,7 +103,7 @@ export default async function SaloDirectory({ locale = "es", categorySlug, areaS
               </Link>;
             })}
           </div>
-        </div>
+        </div>}
 
         {!categorySlug && !areaSlug && !listing && <div className="mt-16">
           <div className="eyebrow text-copper">{t.areas}</div>
