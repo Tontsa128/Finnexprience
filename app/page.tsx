@@ -208,7 +208,7 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
                 "https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=1200",
                 "https://images.unsplash.com/photo-1749069262065-ed7f45b8153c?auto=format&fit=crop&fm=jpg&q=80&w=1200",
               ][index % 4];
-              return <Link key={destination.id} href={prefix + "/salo/destinos/" + destination.slug} className="group overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-xl">
+              return <Link key={destination.id} href={(locale === "fi" ? "/fi/salo/kohteet/" : locale === "en" ? "/en/salo/destinations/" : "/salo/destinos/") + destination.slug} className="group overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-xl">
                 <div className="relative h-52 overflow-hidden bg-[#e9efe9]">
                   <Image src={image} alt={locale === "fi" ? "Matkailun inspiraatiokuva, tarkista kohteen tiedot" : locale === "en" ? "Travel inspiration image; check destination details" : "Imagen de inspiración; consulta los detalles del destino"} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-700 group-hover:scale-105" />
                   <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-extrabold text-ink">{destination.region}</span>
