@@ -100,7 +100,7 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((category, index) => {
-            const image = ["/images/hero-summer.svg", "/images/hero-sauna.svg", "/images/hero-archipelago.svg"][index % 3];
+            const image = ["https://images.unsplash.com/photo-1749069262065-ed7f45b8153c?auto=format&fit=crop&fm=jpg&q=80&w=1800", "https://images.unsplash.com/photo-1758861356142-546a3822ab1a?auto=format&fit=crop&fm=jpg&q=80&w=2200", "https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=2200"][index % 3];
             const teasers = locale === "fi"
               ? ["Löydä oma rauhallinen tukikohta", "Löylyjä, lämpöä ja iltavaloa", "Meri, saaret ja kesäiset reitit", "Paikallisia makuja ja pieniä löytöjä", "Lähde poluille ja metsän rauhaan", "Hetkiä kahdestaan"]
               : locale === "en"
@@ -123,7 +123,7 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
       <section className="container-site pb-24">
         <div className="grid overflow-hidden rounded-[2rem] bg-[#e9efe9] shadow-soft lg:grid-cols-[1.05fr_.95fr]">
           <div className="relative min-h-[320px] overflow-hidden md:min-h-[470px]">
-            <img src="/images/hero-sauna.svg" alt={locale === "fi" ? "Sauna ja kesäilta suomalaisella mökillä" : locale === "en" ? "A sauna and a summer evening at a Finnish cottage" : "Sauna y una tarde de verano en una cabaña finlandesa"} className="absolute inset-0 h-full w-full object-cover transition duration-700 hover:scale-105" />
+            <img src={${JSON.stringify(heroUrl)}} alt={locale === "fi" ? "Sauna ja kesäilta suomalaisella mökillä" : locale === "en" ? "A sauna and a summer evening in Finland" : "Sauna y una tarde de verano en Finlandia"} className="absolute inset-0 h-full w-full object-cover transition duration-700 hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#071915]/55 via-transparent to-transparent" />
             <span className="absolute bottom-6 left-6 rounded-full border border-white/30 bg-black/20 px-4 py-2 text-sm font-bold text-white backdrop-blur">{locale === "fi" ? "Kesä Suomessa · omassa tahdissa" : locale === "en" ? "Summer in Finland · at your own pace" : "Verano en Finlandia · a tu ritmo"}</span>
           </div>
@@ -169,7 +169,7 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
       <section className="container-site py-24">
         <Link href={prefix + "/salo"} className="group grid overflow-hidden rounded-[2rem] bg-[#e9efe9] shadow-sm ring-1 ring-black/5 transition hover:shadow-xl md:grid-cols-2">
           <div className="relative min-h-[300px] overflow-hidden md:min-h-[440px]">
-            <img src="/images/hero-archipelago.svg" alt={locale === "fi" ? "Salon seudun rannikko ja saaristomaisema" : locale === "en" ? "Coastline and archipelago near Salo" : "Costa y archipiélago cerca de Salo"} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+            <img src={${JSON.stringify(seaUrl)}} alt={locale === "fi" ? "Suomen saariston kesämaisema" : locale === "en" ? "Summer scenery in the Finnish archipelago" : "Paisaje de verano del archipiélago finlandés"} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
             <span className="absolute left-6 top-6 rounded-full bg-white/90 px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-ink">Salo · Varsinais-Suomi</span>
           </div>
           <div className="flex flex-col items-start justify-center p-8 md:p-12 lg:p-16">
