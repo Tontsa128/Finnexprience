@@ -75,7 +75,12 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
         .eq("published", true)
         .order("sort_order", { ascending: true })
     : { data: null };
-  const regionCards = (rootDestinations ?? []).filter((destination: { slug: string }) => destination.slug !== "salo");
+  const regionOrder = ["naantali", "turku", "ahvenanmaa", "hanko"];
+  const availableRegions = (rootDestinations ?? []).filter((destination: { slug: string }) => destination.slug !== "salo");
+  const regionCards = [
+    ...regionOrder.map((slug) => availableRegions.find((destination: { slug: string }) => destination.slug === slug)).filter(Boolean),
+    ...availableRegions.filter((destination: { slug: string }) => !regionOrder.includes(destination.slug)),
+  ];
   const t = copy[locale];
   const prefix = locale === "es" ? "" : "/" + locale;
 
