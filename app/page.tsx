@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import { categories, type Locale } from "@/lib/content";
 import { getSiteContent } from "@/lib/site-content";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 const copy = {
   es: {
@@ -66,6 +67,15 @@ const copy = {
 
 export default async function Home({ locale = "es" }: { locale?: Locale }) {
   const siteContent = await getSiteContent(locale);
+  const supabase = await createSupabaseServerClient();
+  const { data: rootDestinations } = supabase
+    ? await supabase.from("destinations")
+        .select("id,slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,provider_url,sort_order")
+        .is("parent_id", null)
+        .eq("published", true)
+        .order("sort_order", { ascending: true })
+    : { data: null };
+  const regionCards = (rootDestinations ?? []).filter((destination: { slug: string }) => destination.slug !== "salo");
   const t = copy[locale];
   const prefix = locale === "es" ? "" : "/" + locale;
 
@@ -181,6 +191,37 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
             <span className="mt-8 inline-flex items-center gap-2 rounded-full bg-pine px-6 py-4 font-extrabold text-white">{t.destinations} <ArrowRight size={18} className="transition group-hover:translate-x-1"/></span>
           </div>
         </Link>
+
+        <section className="mt-12" aria-labelledby="more-destinations">
+          <div className="mb-7 max-w-3xl">
+            <div className="eyebrow text-copper">{locale === "fi" ? "Tutustu myös" : locale === "en" ? "Explore more of Finland" : "Descubre más de Finlandia"}</div>
+            <h2 id="more-destinations" className="mt-3 font-display text-3xl md:text-5xl">{locale === "fi" ? "Rannikkokaupunkeja ja saaristoa" : locale === "en" ? "Coastal towns and island life" : "Ciudades costeras e islas"}</h2>
+            <p className="mt-4 max-w-2xl leading-7 text-black/60">{locale === "fi" ? "Aloita Salon seudulta ja jatka matkaa muihin persoonallisiin rannikko- ja saaristokohteisiin. Lisää kohteita voidaan julkaista myöhemmin hallintapaneelista." : locale === "en" ? "Start in the Salo region and continue to distinctive coastal and island destinations. More places can be added later from the admin panel." : "Empieza en la región de Salo y continúa hacia destinos costeros e insulares con personalidad. Podremos añadir más lugares desde el panel de administración."}</p>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {regionCards.map((destination: { id: string; slug: string; name_es: string; name_en: string; name_fi: string; region: string; description_es: string; description_en: string; description_fi: string; image_url: string | null; sort_order: number }, index: number) => {
+              const title = locale === "fi" ? destination.name_fi : locale === "en" ? destination.name_en : destination.name_es;
+              const description = locale === "fi" ? destination.description_fi : locale === "en" ? destination.description_en : destination.description_es;
+              const image = destination.image_url || [
+                "https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=1200",
+                "https://images.unsplash.com/photo-1749069262065-ed7f45b8153c?auto=format&fit=crop&fm=jpg&q=80&w=1200",
+                "https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=1200",
+                "https://images.unsplash.com/photo-1749069262065-ed7f45b8153c?auto=format&fit=crop&fm=jpg&q=80&w=1200",
+              ][index % 4];
+              return <Link key={destination.id} href={prefix + "/salo/destinos/" + destination.slug} className="group overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-xl">
+                <div className="relative h-52 overflow-hidden bg-[#e9efe9]">
+                  <Image src={image} alt={locale === "fi" ? "Matkailun inspiraatiokuva, tarkista kohteen tiedot" : locale === "en" ? "Travel inspiration image; check destination details" : "Imagen de inspiración; consulta los detalles del destino"} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-700 group-hover:scale-105" />
+                  <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-extrabold text-ink">{destination.region}</span>
+                </div>
+                <div className="p-5">
+                  <h3 className="font-display text-2xl">{title}</h3>
+                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-black/60">{description}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 font-extrabold text-pine">{locale === "fi" ? "Tutustu kohteeseen" : locale === "en" ? "Explore destination" : "Descubrir destino"} <ArrowRight size={16} className="transition group-hover:translate-x-1" /></span>
+                </div>
+              </Link>;
+            })}
+          </div>
+        </section>
       </section>
     </main>
     <footer className="border-t border-black/10 py-10">
