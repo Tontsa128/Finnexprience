@@ -20,6 +20,9 @@ type Destination = {
   category: string;
   parent_id: string | null;
   gallery_urls: string[] | null;
+  image_alt_es: string;
+  image_alt_en: string;
+  image_alt_fi: string;
 };
 
 export default async function CmsDestinationPage({ locale, slug }: { locale: Locale; slug: string }) {
@@ -28,7 +31,7 @@ export default async function CmsDestinationPage({ locale, slug }: { locale: Loc
 
   const { data, error } = await supabase
     .from("destinations")
-    .select("id,slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,provider_url,category,parent_id,gallery_urls")
+    .select("id,slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,provider_url,category,parent_id,gallery_urls,image_alt_es,image_alt_en,image_alt_fi")
     .eq("slug", slug)
     .eq("published", true)
     .maybeSingle();
@@ -45,13 +48,14 @@ export default async function CmsDestinationPage({ locale, slug }: { locale: Loc
   const description = locale === "fi" ? destination.description_fi : locale === "en" ? destination.description_en : destination.description_es;
   const t = saloCopy[locale];
   const image = destination.image_url || "/images/hero-summer.svg";
+  const imageAlt = (locale === "fi" ? destination.image_alt_fi : locale === "en" ? destination.image_alt_en : destination.image_alt_es) || title || "Finnexprience destination";
   const providerUrl = (() => { try { const url = new URL(destination.provider_url || ""); return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null; } catch { return null; } })();
 
   return <>
     <Header />
     <main className="pt-24">
       <section className="relative overflow-hidden bg-pine text-white">
-        <Image src={image} alt={title || "Finnexprience destination"} fill priority sizes="100vw" className="object-cover opacity-55" />
+        <Image src={image} alt={imageAlt} fill priority sizes="100vw" className="object-cover opacity-55" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#071915]/90 via-[#071915]/65 to-[#071915]/25" />
         <div className="container-site relative py-20 md:py-28">
           <div className="eyebrow text-[#e8b28f]">{destination.region || t.eyebrow}</div>
