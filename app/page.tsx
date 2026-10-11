@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Compass, Heart, Map, ShieldCheck, Sparkles, type LucideIcon } from "lucide-react";
@@ -189,3 +190,21 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
     </footer>
   </>;
 }
+
+
+export const metadata: Metadata = {
+  title: "Finnexprience | Descubre la Finlandia auténtica",
+  description: "Planifica una escapada tranquila en Finlandia: cabañas, sauna, archipiélago, naturaleza y experiencias locales en la región de Salo.",
+  alternates: {
+    canonical: "/",
+    languages: { es: "/", fi: "/fi", en: "/en" },
+  },
+  openGraph: {
+    title: "Finnexprience | Descubre la Finlandia auténtica",
+    description: "Cabañas, sauna, archipiélago y experiencias locales en el suroeste de Finlandia.",
+    url: "/",
+    siteName: "Finnexprience",
+    locale: "es_ES",
+    type: "website",
+  },
+};
