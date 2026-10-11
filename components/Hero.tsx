@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Locale, SiteContent } from "@/lib/content";
 
@@ -28,7 +29,7 @@ export default function Hero({ content, locale = "es" }: { content: SiteContent;
 
   return <section className="relative min-h-[690px] overflow-hidden bg-pine text-white md:min-h-[790px]">
     <div className="absolute inset-0">
-      <img src={slide.image} alt={slide.alt} fetchPriority="high" className="h-full w-full object-cover transition-opacity duration-1000" />
+      <Image src={slide.image} alt={slide.alt} fill priority sizes="100vw" className="object-cover transition-opacity duration-1000" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,25,21,.78)_0%,rgba(7,25,21,.42)_48%,rgba(7,25,21,.18)_100%)]" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#071915]/70 via-transparent to-transparent" />
     </div>
