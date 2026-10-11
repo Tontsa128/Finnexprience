@@ -70,10 +70,10 @@ The goal is for the site owner to manage content without editing source code for
 ### Current implementation notes
 - The admin UI is in `app/admin/page.tsx`.
 - Browser-side Supabase configuration is in `lib/supabase-browser.ts`.
-- The Salo directory data is currently represented in code in `lib/salo-directory.ts` and `lib/salo-listings.ts`; adding or changing those records currently requires a code update unless/until the CMS data layer is connected.
-- The admin page has UI flows for homepage hero-image upload, destination-image upload/preview, multilingual homepage hero text, page editing, destination records and incoming trip requests.
+- The directory categories, area descriptions and curated listings in `lib/salo-directory.ts` and `lib/salo-listings.ts` are still code-managed. Published CMS destination records from Supabase are now shown on the Salo directory landing page and link to localized detail routes.
+- The admin page has UI flows for homepage hero-image upload, destination-image upload/preview, multilingual homepage hero text, page editing, destination records and incoming trip requests. Hero slides currently use default Spanish alt/eyebrow text when created; the admin does not yet provide full per-language slide editing, ordering controls or active/inactive controls.
 - The admin expects Supabase. A missing-configuration fallback prevents the build from failing, but **does not** make login, database persistence or image upload work by itself.
-- Salo destination/area directory entries in `lib/salo-directory.ts` and curated listings in `lib/salo-listings.ts` remain code-managed. CMS destinations in Supabase are a separate data path; confirm the public pages read those CMS records before assuming that editing a record updates every directory page.
+- Published CMS destinations appear on the Salo directory landing page and have Spanish, Finnish and English detail routes. They do not replace the hard-coded categories, area pages or curated listings. The admin `pages` table currently supports editing and persistence, but public routes to render those custom pages are not yet implemented. Saving a CMS page therefore does not make it available as a public page.
 - To enable the admin for production, configure Supabase and Vercel using the checklist below. Never commit secrets or expose a `service_role` key in browser code.
 
 ### Supabase and admin setup checklist
@@ -161,8 +161,11 @@ Use environment-specific Vercel variables for deployment. The public browser key
 - [ ] Verify every external link and record its source.
 
 ### Phase 3 — Owner-friendly CMS
+- [x] Connect published destination records to the Salo directory and localized destination detail routes.
+- [ ] Render admin-managed `pages` records on public localized routes.
 - [ ] Connect destination/page records to the database rather than hard-coded arrays.
 - [ ] Add secure image upload and image rights/credit fields.
+- [ ] Add multilingual hero-slide editing, reordering, active/inactive controls and image alt text.
 - [ ] Add multilingual editing, draft preview, publish state and SEO fields.
 - [ ] Test create/edit/delete flows and confirm data persists after reload.
 
