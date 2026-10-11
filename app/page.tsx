@@ -98,15 +98,44 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
           <p className="mt-5 text-lg leading-8 text-black/60">{t.exploreText}</p>
         </div>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
-            <Link key={category.key} href={prefix + "/experiencias?tipo=" + category.key} className="group rounded-3xl bg-white p-7 shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-soft">
-              <span className="text-4xl">{category.icon}</span>
-              <h3 className="mt-8 text-xl font-extrabold">{category[locale]}</h3>
-              <p className="mt-2 text-sm text-black/55">{t.selected}</p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-pine">{t.explore} <ArrowRight size={16} className="transition group-hover:translate-x-1" /></span>
-            </Link>
-          ))}
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((category, index) => {
+            const image = ["/images/hero-summer.svg", "/images/hero-sauna.svg", "/images/hero-archipelago.svg"][index % 3];
+            const teasers = locale === "fi"
+              ? ["Löydä oma rauhallinen tukikohta", "Löylyjä, lämpöä ja iltavaloa", "Meri, saaret ja kesäiset reitit", "Paikallisia makuja ja pieniä löytöjä", "Lähde poluille ja metsän rauhaan", "Hetkiä kahdestaan"]
+              : locale === "en"
+                ? ["Find your own peaceful hideaway", "Warm sauna moments in the evening light", "Sea, islands and summer routes", "Local flavours and little discoveries", "Follow trails into the quiet forest", "Time together, away from the rush"]
+                : ["Encuentra tu refugio tranquilo", "Sauna y calma bajo la luz del atardecer", "Mar, islas y rutas de verano", "Sabores locales y pequeños hallazgos", "Senderos y silencio del bosque", "Momentos para compartir"];
+            return <Link key={category.key} href={prefix + "/experiencias?tipo=" + category.key} className="group relative isolate min-h-[340px] overflow-hidden rounded-[1.75rem] bg-pine text-white shadow-sm ring-1 ring-black/5 transition duration-500 hover:-translate-y-1 hover:shadow-2xl">
+              <img src={image} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover transition duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#071915]/95 via-[#071915]/35 to-[#071915]/5" />
+              <div className="absolute left-5 top-5 rounded-full border border-white/25 bg-black/20 px-3 py-1.5 text-xs font-bold tracking-wide backdrop-blur">{category.icon} <span className="ml-1">{category[locale]}</span></div>
+              <div className="flex min-h-[340px] flex-col justify-end p-6 md:p-7">
+                <h3 className="font-display text-3xl leading-tight">{category[locale]}</h3>
+                <p className="mt-2 max-w-xs text-sm leading-6 text-white/80">{teasers[index % teasers.length]}</p>
+                <span className="mt-5 inline-flex items-center gap-2 font-extrabold text-[#f0c4a6]">{t.explore} <ArrowRight size={17} className="transition group-hover:translate-x-1" /></span>
+              </div>
+            </Link>;
+          })}
+        </div>
+      </section>
+
+      <section className="container-site pb-24">
+        <div className="grid overflow-hidden rounded-[2rem] bg-[#e9efe9] shadow-soft lg:grid-cols-[1.05fr_.95fr]">
+          <div className="relative min-h-[320px] overflow-hidden md:min-h-[470px]">
+            <img src="/images/hero-sauna.svg" alt={locale === "fi" ? "Sauna ja kesäilta suomalaisella mökillä" : locale === "en" ? "A sauna and a summer evening at a Finnish cottage" : "Sauna y una tarde de verano en una cabaña finlandesa"} className="absolute inset-0 h-full w-full object-cover transition duration-700 hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#071915]/55 via-transparent to-transparent" />
+            <span className="absolute bottom-6 left-6 rounded-full border border-white/30 bg-black/20 px-4 py-2 text-sm font-bold text-white backdrop-blur">{locale === "fi" ? "Kesä Suomessa · omassa tahdissa" : locale === "en" ? "Summer in Finland · at your own pace" : "Verano en Finlandia · a tu ritmo"}</span>
+          </div>
+          <div className="flex flex-col items-start justify-center p-8 md:p-12 lg:p-14">
+            <div className="eyebrow text-moss">{locale === "fi" ? "Loma, joka hengittää" : locale === "en" ? "Make room to slow down" : "Unas vacaciones para respirar"}</div>
+            <h2 className="mt-4 font-display text-4xl leading-tight md:text-5xl">{locale === "fi" ? "Kuvittele viikko, jolloin mihinkään ei ole kiire." : locale === "en" ? "Imagine a week with nowhere you need to rush." : "Imagina una semana sin tener que correr."}</h2>
+            <p className="mt-5 leading-7 text-black/65">{locale === "fi" ? "Aamukahvi mökin terassilla, retki pieneen rannikkokylään, paikallista ruokaa ja sauna auringon laskiessa. Kokoa omannäköisesi loma Salon seudun ja lounaisrannikon aidoista paikoista." : locale === "en" ? "Morning coffee on a cottage terrace, a trip to a small coastal village, local food and a sauna as the sun goes down. Shape your own holiday around authentic places in the Salo region and Finland’s southwest coast." : "Un café en la terraza, una visita a un pequeño pueblo costero, sabores locales y una sauna al atardecer. Diseña tus vacaciones con lugares auténticos de Salo y la costa suroeste de Finlandia."}</p>
+            <div className="mt-7 grid w-full gap-3 sm:grid-cols-3">
+              {[locale === "fi" ? "Majoitu luonnon lähellä" : locale === "en" ? "Stay close to nature" : "Duerme cerca de la naturaleza", locale === "fi" ? "Löydä paikalliset maut" : locale === "en" ? "Taste local flavours" : "Prueba sabores locales", locale === "fi" ? "Tutki omaan tahtiin" : locale === "en" ? "Explore at your pace" : "Explora a tu ritmo"].map((item, i) => <div key={item} className="rounded-2xl border border-black/5 bg-white/75 p-4"><span className="text-xs font-extrabold text-copper">0{i + 1}</span><p className="mt-2 text-sm font-bold leading-5">{item}</p></div>)}
+            </div>
+            <Link href={prefix + "/salo"} className="mt-8 inline-flex items-center gap-2 rounded-full bg-pine px-6 py-4 font-extrabold text-white transition hover:bg-ink">{locale === "fi" ? "Löydä Salon seutu" : locale === "en" ? "Discover the Salo region" : "Descubre la región de Salo"} <ArrowRight size={18} /></Link>
+          </div>
         </div>
       </section>
 
