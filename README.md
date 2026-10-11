@@ -71,7 +71,9 @@ The goal is for the site owner to manage content without editing source code for
 
 ### Target admin capabilities
 - Secure owner login.
-- Create, edit, preview, publish/unpublish and delete pages and destination listings.
+- Create, edit, publish/unpublish and delete pages and destination listings.
+- Organize destinations hierarchically: top-level regions → cities/villages → child pages for accommodation, services, events and experiences.
+- Upload a cover image and multiple gallery images for each destination or subpage.
 - Upload images, write useful alternative text, reorder gallery/hero images and select a cover image.
 - Edit Spanish, Finnish and English titles, descriptions, calls to action and SEO metadata.
 - Maintain provider name, official website, address/area, categories, source URL, image rights/credit and last-verified date.
@@ -81,8 +83,8 @@ The goal is for the site owner to manage content without editing source code for
 ### Current implementation notes
 - The admin UI is in `app/admin/page.tsx`.
 - Browser-side Supabase configuration is in `lib/supabase-browser.ts`.
-- The directory categories, area descriptions and curated listings in `lib/salo-directory.ts` and `lib/salo-listings.ts` are still code-managed. Published CMS destination records from Supabase are now shown on the Salo directory landing page and link to localized detail routes.
-- The admin page has UI flows for homepage hero-image upload, destination-image upload/preview, multilingual homepage hero text, page editing, destination records and incoming trip requests. Hero slides currently use default Spanish alt/eyebrow text when created; the admin does not yet provide full per-language slide editing, ordering controls or active/inactive controls.
+- The directory categories, area descriptions and curated listings in `lib/salo-directory.ts` and `lib/salo-listings.ts` are still code-managed. Published CMS destination records from Supabase are shown on the Salo directory landing page and homepage regional cards. Destination records support parent/child hierarchy, gallery image URLs and localized cover-image alt text through migration `supabase/migrations/0005_destination_hierarchy.sql`.
+- The admin page has UI flows for homepage hero-image upload, destination-image upload/preview, multiple destination gallery images, parent/child destination selection, multilingual homepage hero text, page editing, destination records and incoming trip requests. Hero slides currently use default Spanish alt/eyebrow text when created; the admin does not yet provide full per-language slide editing, ordering controls or active/inactive controls.
 - The admin expects Supabase. A missing-configuration fallback prevents the build from failing, but **does not** make login, database persistence or image upload work by itself.
 - Published CMS destinations appear on the Salo directory landing page and have Spanish, Finnish and English detail routes. They do not replace the hard-coded categories, area pages or curated listings. Published admin-managed `pages` records now render on `/{slug}`, `/fi/{slug}` and `/en/{slug}` using the matching language fields. These routes require Supabase configuration and a published record; there is not yet a dedicated draft preview or editable SEO metadata workflow.
 - To enable the admin for production, configure Supabase and Vercel using the checklist below. Never commit secrets or expose a `service_role` key in browser code.
@@ -90,7 +92,7 @@ The goal is for the site owner to manage content without editing source code for
 ### Supabase and admin setup checklist
 
 1. Create a Supabase project and open its **SQL Editor**.
-2. Run the complete `supabase/schema.sql` script. It creates the application tables, Row Level Security policies, the public `media` image bucket (10 MiB upload limit; JPEG, PNG, WebP and AVIF), and policies that allow public image reads but restrict uploads, updates and deletes to signed-in users listed as admins.
+2. For a new project, run the complete `supabase/schema.sql` script. For an existing project, run `supabase/migrations/0005_destination_hierarchy.sql` in the Supabase SQL Editor. This migration adds parent/child destinations and image galleries, and seeds the Naantali, Turku, Åland and Hanko starter records. It does not create provider partnerships; the starter copy is editorial and official links are provided for visitors to verify details.
 3. In Supabase **Authentication → Users**, create the owner login account and copy its user UUID.
 4. In the SQL Editor, register that account as an admin. Replace the sample UUID and email with the values from your account:
    ```sql
@@ -168,6 +170,7 @@ Use environment-specific Vercel variables for deployment. The public browser key
 - [ ] Confirm the homepage, admin route and localized routes build and render.
 
 ### Phase 2 — Destination directory
+- [x] Add Naantali, Turku, Åland and Hanko as initial homepage destination cards, with additional top-level destinations supported from the admin.
 - [ ] Complete Salo, Perniö, Mathildedal, Teijo and Särkisalo pages.
 - [ ] Add a curated Kemiönsaari section with official provider/destination links.
 - [ ] Replace generic placeholder artwork with original or licensed photographs.
@@ -176,7 +179,9 @@ Use environment-specific Vercel variables for deployment. The public browser key
 ### Phase 3 — Owner-friendly CMS
 - [x] Connect published destination records to the Salo directory and localized destination detail routes.
 - [x] Render published admin-managed `pages` records on public localized routes in Spanish, Finnish and English.
-- [ ] Connect destination/page records to the database rather than hard-coded arrays.
+- [x] Connect homepage destination cards to published database records.
+- [x] Add parent/child destination hierarchy and multi-image galleries to the admin and destination pages.
+- [ ] Connect remaining hard-coded category and curated listing arrays to the database.
 - [ ] Add secure image upload and image rights/credit fields.
 - [ ] Add multilingual hero-slide editing, reordering, active/inactive controls and image alt text.
 - [ ] Add multilingual editing, draft preview, publish state and SEO fields.
