@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Compass, Heart, Map, ShieldCheck, Sparkles, type LucideIcon } from "lucide-react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
@@ -107,7 +108,7 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
                 ? ["Find your own peaceful hideaway", "Warm sauna moments in the evening light", "Sea, islands and summer routes", "Local flavours and little discoveries", "Follow trails into the quiet forest", "Time together, away from the rush"]
                 : ["Encuentra tu refugio tranquilo", "Sauna y calma bajo la luz del atardecer", "Mar, islas y rutas de verano", "Sabores locales y pequeños hallazgos", "Senderos y silencio del bosque", "Momentos para compartir"];
             return <Link key={category.key} href={prefix + "/experiencias?tipo=" + category.key} className="group relative isolate min-h-[340px] overflow-hidden rounded-[1.75rem] bg-pine text-white shadow-sm ring-1 ring-black/5 transition duration-500 hover:-translate-y-1 hover:shadow-2xl">
-              <img src={image} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover transition duration-700 group-hover:scale-110" />
+              <Image src={image} alt="" aria-hidden="true" fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="absolute inset-0 -z-20 object-cover transition duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#071915]/95 via-[#071915]/35 to-[#071915]/5" />
               <div className="absolute left-5 top-5 rounded-full border border-white/25 bg-black/20 px-3 py-1.5 text-xs font-bold tracking-wide backdrop-blur">{category.icon} <span className="ml-1">{category[locale]}</span></div>
               <div className="flex min-h-[340px] flex-col justify-end p-6 md:p-7">
@@ -123,7 +124,7 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
       <section className="container-site pb-24">
         <div className="grid overflow-hidden rounded-[2rem] bg-[#e9efe9] shadow-soft lg:grid-cols-[1.05fr_.95fr]">
           <div className="relative min-h-[320px] overflow-hidden md:min-h-[470px]">
-            <img src="https://images.unsplash.com/photo-1758861356142-546a3822ab1a?auto=format&fit=crop&fm=jpg&q=80&w=2200" alt={locale === "fi" ? "Sauna ja kesäilta suomalaisella mökillä" : locale === "en" ? "A sauna and a summer evening in Finland" : "Sauna y una tarde de verano en Finlandia"} className="absolute inset-0 h-full w-full object-cover transition duration-700 hover:scale-105" />
+            <Image src="https://images.unsplash.com/photo-1758861356142-546a3822ab1a?auto=format&fit=crop&fm=jpg&q=80&w=2200" alt={locale === "fi" ? "Sauna ja kesäilta suomalaisella mökillä" : locale === "en" ? "A sauna and a summer evening in Finland" : "Sauna y una tarde de verano en Finlandia"} fill sizes="(max-width: 1024px) 100vw, 52vw" className="object-cover transition duration-700 hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#071915]/55 via-transparent to-transparent" />
             <span className="absolute bottom-6 left-6 rounded-full border border-white/30 bg-black/20 px-4 py-2 text-sm font-bold text-white backdrop-blur">{locale === "fi" ? "Kesä Suomessa · omassa tahdissa" : locale === "en" ? "Summer in Finland · at your own pace" : "Verano en Finlandia · a tu ritmo"}</span>
           </div>
@@ -169,7 +170,7 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
       <section className="container-site py-24">
         <Link href={prefix + "/salo"} className="group grid overflow-hidden rounded-[2rem] bg-[#e9efe9] shadow-sm ring-1 ring-black/5 transition hover:shadow-xl md:grid-cols-2">
           <div className="relative min-h-[300px] overflow-hidden md:min-h-[440px]">
-            <img src="https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=2200" alt={locale === "fi" ? "Suomen saariston kesämaisema" : locale === "en" ? "Summer scenery in the Finnish archipelago" : "Paisaje de verano del archipiélago finlandés"} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+            <Image src="https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=2200" alt={locale === "fi" ? "Suomen saariston kesämaisema" : locale === "en" ? "Summer scenery in the Finnish archipelago" : "Paisaje de verano del archipiélago finlandés"} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition duration-700 group-hover:scale-105" />
             <span className="absolute left-6 top-6 rounded-full bg-white/90 px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-ink">Salo · Varsinais-Suomi</span>
           </div>
           <div className="flex flex-col items-start justify-center p-8 md:p-12 lg:p-16">
