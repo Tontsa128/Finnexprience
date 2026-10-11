@@ -184,7 +184,7 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
     </main>
     <footer className="border-t border-black/10 py-10">
       <div className="container-site flex flex-col justify-between gap-4 text-sm text-black/50 md:flex-row">
-        <span>© 2026 Finnexprience</span><span>{t.footer}</span>
+        <span>© 2026 Finnexprience</span><div className="flex flex-wrap items-center gap-x-5 gap-y-2"><span>{t.footer}</span><a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="underline decoration-black/20 underline-offset-4 transition hover:text-pine">{locale === "fi" ? "Kuvituskuvat: Unsplash" : locale === "en" ? "Inspiration photography: Unsplash" : "Fotografía de inspiración: Unsplash"}</a></div>
       </div>
     </footer>
   </>;
