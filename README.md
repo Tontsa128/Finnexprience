@@ -35,6 +35,17 @@ Research observations:
 - Särkisalo's appeal includes coastal nature, islands, beaches, cycling and a relaxed summer harbour atmosphere.
 - These facts guide the content plan; they do not grant permission to copy another site's photos, text, branding or design.
 
+## Homepage visual direction and image rights
+
+The homepage has been updated with a photographic hero, stronger location framing, image-led experience cards, and a story section around a slower Finnish summer holiday. The Spanish default remains unchanged, with Finnish and English versions using the same layout and localized copy.
+
+Current inspiration photographs are served from Unsplash's image CDN:
+- Sauna interior with lake view: https://unsplash.com/photos/cozy-cabin-with-wood-stove-overlooking-a-serene-lake-j9H1arwi_ao
+- Finnish lakeside cottage in forest: https://unsplash.com/photos/a-cabin-sits-among-lush-green-trees-u1rbvJrX2MQ
+- Archipelago/sailing inspiration: https://unsplash.com/s/photos/finnish-archipelago
+
+These are inspirational editorial images, not evidence that a pictured building, sauna or view belongs to a specific Salo-region provider. Do not use them as accommodation listing photos or imply that they depict a named partner. Before production launch, confirm image URLs, keep a source/credit record, and replace generic inspiration imagery with approved photographs of the actual destination where available. For performance and reliability, consider moving approved images to managed storage and adding responsive local/CDN variants.
+
 ## Customer experience and information architecture
 
 ### Main navigation
