@@ -150,8 +150,10 @@ Use environment-specific Vercel variables for deployment. The public browser key
 
 ## SEO and accessibility checklist
 
-- Unique localized title and meta description for every indexable page.
-- Correct canonical URL and language alternates.
+- [x] Localized title and meta description for the Spanish, Finnish and English homepages.
+- [x] Homepage canonical URLs and language alternates.
+- [ ] Add page-specific localized metadata to all destination, experience and CMS routes.
+- [ ] Ensure the rendered document language is correct for each locale route (the root layout currently defaults to Spanish).
 - Useful, descriptive image alt text and responsive image sizes.
 - Semantic headings, keyboard-accessible navigation and visible focus states.
 - Working sitemap and links that resolve to the correct language route.
@@ -161,7 +163,7 @@ Use environment-specific Vercel variables for deployment. The public browser key
 ## Roadmap
 
 ### Phase 1 — Foundation and release reliability
-- [ ] Keep the deployment branch building reliably.
+- [ ] Keep the deployment branch building reliably; the latest Vercel preview currently cannot be confirmed because the account hit Vercel's free-tier deployment limit (more than 100 deployments in 24 hours). Re-check after the limit resets.
 - [ ] Configure Supabase, authentication, database, storage and access policies.
 - [ ] Confirm the homepage, admin route and localized routes build and render.
 
