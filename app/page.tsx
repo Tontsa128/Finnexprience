@@ -78,9 +78,9 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
   const regionOrder = ["naantali", "turku", "ahvenanmaa", "hanko"];
   const availableRegions = (rootDestinations ?? []).filter((destination: { slug: string }) => destination.slug !== "salo");
   const regionCards = [
-    ...regionOrder.map((slug) => availableRegions.find((destination: { slug: string }) => destination.slug === slug)).filter(Boolean),
+    ...regionOrder.map((slug) => availableRegions.find((destination: { slug: string }) => destination.slug === slug)),
     ...availableRegions.filter((destination: { slug: string }) => !regionOrder.includes(destination.slug)),
-  ];
+  ].filter((destination): destination is NonNullable<typeof destination> => Boolean(destination));
   const t = copy[locale];
   const prefix = locale === "es" ? "" : "/" + locale;
 
