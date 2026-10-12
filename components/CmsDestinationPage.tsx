@@ -23,6 +23,9 @@ type Destination = {
   image_alt_es: string;
   image_alt_en: string;
   image_alt_fi: string;
+  image_source_url: string | null;
+  image_credit: string | null;
+  content_checked_at: string | null;
 };
 
 export default async function CmsDestinationPage({ locale, slug }: { locale: Locale; slug: string }) {
@@ -31,7 +34,7 @@ export default async function CmsDestinationPage({ locale, slug }: { locale: Loc
 
   const { data, error } = await supabase
     .from("destinations")
-    .select("id,slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,provider_url,category,parent_id,gallery_urls,image_alt_es,image_alt_en,image_alt_fi")
+    .select("id,slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,provider_url,category,parent_id,gallery_urls,image_alt_es,image_alt_en,image_alt_fi,image_source_url,image_credit,content_checked_at")
     .eq("slug", slug)
     .eq("published", true)
     .maybeSingle();
@@ -50,6 +53,7 @@ export default async function CmsDestinationPage({ locale, slug }: { locale: Loc
   const image = destination.image_url || "/images/hero-summer.svg";
   const imageAlt = (locale === "fi" ? destination.image_alt_fi : locale === "en" ? destination.image_alt_en : destination.image_alt_es) || title || "Finnexprience destination";
   const providerUrl = (() => { try { const url = new URL(destination.provider_url || ""); return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null; } catch { return null; } })();
+  const imageSourceUrl = (() => { try { const url = new URL(destination.image_source_url || ""); return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null; } catch { return null; } })();
 
   return <>
     <Header />
@@ -62,6 +66,7 @@ export default async function CmsDestinationPage({ locale, slug }: { locale: Loc
           <h1 className="mt-4 max-w-4xl font-display text-5xl leading-tight md:text-7xl">{title}</h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/85">{description}</p>
           <Link href={localizedSaloPath(locale, "/salo")} className="mt-8 inline-flex rounded-full border border-white/50 px-5 py-3 font-bold hover:bg-white hover:text-ink">← {t.back}</Link>
+          {(destination.image_credit || imageSourceUrl) && <p className="mt-5 text-xs text-white/75">{locale === "fi" ? "Kuvan tiedot:" : locale === "en" ? "Image credit:" : "Crédito de imagen:"} {destination.image_credit && <span>{destination.image_credit}</span>}{destination.image_credit && imageSourceUrl && " · "}{imageSourceUrl && <a href={imageSourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{locale === "fi" ? "Lähde" : locale === "en" ? "Source" : "Fuente"} ↗</a>}</p>}
         </div>
       </section>
       <section className="container-site py-14 md:py-20">
@@ -92,6 +97,7 @@ export default async function CmsDestinationPage({ locale, slug }: { locale: Loc
               })}
             </div>
           </div>}
+          {destination.content_checked_at && <p className="mt-4 text-xs text-black/45">{locale === "fi" ? "Sisältö tarkistettu" : locale === "en" ? "Content last checked" : "Contenido revisado"}: {destination.content_checked_at}</p>}
           <p className="mt-6 text-sm text-black/50">{t.notice}</p>
           <Link href={localizedSaloPath(locale, "/salo")} className="mt-7 inline-flex rounded-full bg-pine px-6 py-3 font-extrabold text-white">{t.back}</Link>
         </div>
