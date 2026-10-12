@@ -86,7 +86,7 @@ The goal is for the site owner to manage content without editing source code for
 - The directory categories, area descriptions and curated listings in `lib/salo-directory.ts` and `lib/salo-listings.ts` are still code-managed. Published CMS destination records from Supabase are shown on the Salo directory landing page and homepage regional cards. Destination records support parent/child hierarchy, gallery image URLs and localized cover-image alt text through migration `supabase/migrations/0005_destination_hierarchy.sql`.
 - The admin page supports homepage hero-image upload, destination cover/gallery uploads, parent/child destination selection, multilingual homepage text, editable destination/page records and incoming trip requests. Hero slides can be edited in Spanish, English and Finnish, reordered, activated/deactivated, and given source URL, creator/rights credit and licence notes. CMS pages include a three-language draft preview, URL-slug validation, and localized SEO titles/descriptions. Published CMS page metadata uses those SEO fields when supplied and falls back to the page title/content excerpt. Destination records include image-source, credit/licence and content-review-date fields.
 - The admin expects Supabase. A missing-configuration fallback prevents the build from failing, but **does not** make login, database persistence or image upload work by itself.
-- Published CMS destinations appear on the Salo directory landing page and have Spanish, Finnish and English detail routes. Destination detail pages display the image credit/source link and content review date when supplied. They do not replace the hard-coded categories, area pages or curated listings. Published admin-managed `pages` records render on `/{slug}`, `/fi/{slug}` and `/en/{slug}` using the matching language fields. Public routes require Supabase configuration and a published record; the admin editor has an internal three-language preview, but there is no public draft-preview URL or CMS-page SEO editor yet.
+- Published CMS destinations appear on the Salo directory landing page and have Spanish, Finnish and English detail routes. Destination detail pages display the image credit/source link and content review date when supplied. They do not replace the hard-coded categories, area pages or curated listings. Published admin-managed `pages` records render on `/{slug}`, `/fi/{slug}` and `/en/{slug}` using the matching language fields. The sitemap includes published CMS pages and destinations with language alternates. Public routes require Supabase configuration and a published record; the admin editor has an internal three-language preview, but there is no public draft-preview URL.
 - To enable the admin for production, configure Supabase and Vercel using the checklist below. Never commit secrets or expose a `service_role` key in browser code.
 
 ### Supabase and admin setup checklist
@@ -109,7 +109,10 @@ Required Vercel environment variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-Set them for the relevant Preview and Production environments, then redeploy. Use only the public/anon or publishable browser key; protect database access with authentication and Row Level Security.
+Optional:
+- `NEXT_PUBLIC_SITE_URL` — canonical public site origin used by the sitemap (set this if using a custom domain; default is `https://finnexprience.vercel.app`).
+
+Set the required Supabase variables for the relevant Preview and Production environments, then redeploy. Use only the public/anon or publishable browser key; protect database access with authentication and Row Level Security.
 
 ## Technology
 
