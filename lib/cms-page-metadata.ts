@@ -20,9 +20,10 @@ export async function getCmsPageMetadata(slug: string, locale: Locale): Promise<
         .maybeSingle()
     : { data: null };
 
-  const title = data?.[`seo_title_${suffix}`] || data?.[`title_${suffix}`] || slug.replace(/-/g, " ");
-  const plainContent = String(data?.[`content_${suffix}`] || "").replace(/\\s+/g, " ").trim();
-  const description = data?.[`seo_description_${suffix}`] || plainContent.slice(0, 160) || fallbackDescription[locale];
+  const page = data as Record<string, string | null> | null;
+  const title = page?.[`seo_title_${suffix}`] || page?.[`title_${suffix}`] || slug.replace(/-/g, " ");
+  const plainContent = String(page?.[`content_${suffix}`] || "").replace(/\s+/g, " ").trim();
+  const description = page?.[`seo_description_${suffix}`] || plainContent.slice(0, 160) || fallbackDescription[locale];
   const canonical = (locale === "es" ? "" : "/" + locale) + "/" + slug;
   return {
     title: title + " | Finnexprience",
