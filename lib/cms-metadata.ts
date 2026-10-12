@@ -43,7 +43,8 @@ export async function getCmsPageMetadata(slug: string, locale: Locale): Promise<
     .maybeSingle();
 
   if (error || !data) return defaults;
-  const title = String(data[fields.seoTitle] || data[fields.title] || defaults.title).trim();
-  const description = excerpt(data[fields.seoDescription] || data[fields.content], fallbackDescriptions[locale]);
+  const record = data as unknown as Record<string, string | null>;
+  const title = String(record[fields.seoTitle] || record[fields.title] || defaults.title).trim();
+  const description = excerpt(record[fields.seoDescription] || record[fields.content], fallbackDescriptions[locale]);
   return { ...defaults, title, description };
 }
