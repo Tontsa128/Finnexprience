@@ -5,6 +5,8 @@ export type HeroSlide = {
   image: string;
   alt: string;
   eyebrow: string;
+  credit?: string;
+  sourceUrl?: string;
 };
 
 export type SiteContent = {
