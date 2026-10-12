@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Compass, Heart, Map, ShieldCheck, Sparkles, type LucideIcon } from "lucide-react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import { categories, type Locale } from "@/lib/content";
 import { getSiteContent } from "@/lib/site-content";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 const copy = {
   es: {
@@ -20,9 +23,9 @@ const copy = {
     discovery: "Descubrimiento", discoveryText: "Explora destinos y servicios locales.",
     clarity: "Información clara", clarityText: "Datos que pueden verificarse antes de reservar.",
     moments: "Momentos especiales", momentsText: "Viajes alrededor de lo que te importa.",
-    regionEyebrow: "Primera región", regionTitle: "Salo, Mathildedal y la costa del suroeste.",
-    regionText: "Nuestro punto de partida: una Finlandia cercana, tranquila y llena de historias. Después, el concepto puede crecer hacia todo Varsinais-Suomi y el resto del país.",
-    destinations: "Ver destinos", footer: "Authentic Finland · Español · English · Suomi",
+    regionEyebrow: "Primera región", regionTitle: "Descubre la región de Salo.",
+    regionText: "Empieza por Salo: alojamientos, pueblos, gastronomía, naturaleza y experiencias locales en la costa suroeste de Finlandia.",
+    destinations: "Descubrir Salo", footer: "Authentic Finland · Español · English · Suomi",
   },
   en: {
     localTitle: "Local & authentic", localText: "Places and people who know the real Finland.",
@@ -38,9 +41,9 @@ const copy = {
     discovery: "Discovery", discoveryText: "Explore destinations and local services.",
     clarity: "Clear information", clarityText: "Information that can be verified before booking.",
     moments: "Special moments", momentsText: "Trips shaped around what matters to you.",
-    regionEyebrow: "Our first region", regionTitle: "Salo, Mathildedal and the southwest coast.",
-    regionText: "Our starting point: a close, peaceful Finland full of stories. The concept can then grow across Southwest Finland and the rest of the country.",
-    destinations: "View destinations", footer: "Authentic Finland · Español · English · Suomi",
+    regionEyebrow: "Our first region", regionTitle: "Discover the Salo region.",
+    regionText: "Start with Salo: accommodation, villages, local food, nature and experiences along Finland’s southwest coast.",
+    destinations: "Explore Salo", footer: "Authentic Finland · Español · English · Suomi",
   },
   fi: {
     localTitle: "Paikallinen ja aito", localText: "Paikat ja ihmiset, jotka tuntevat aidon Suomen.",
@@ -56,14 +59,28 @@ const copy = {
     discovery: "Löytäminen", discoveryText: "Tutustu kohteisiin ja paikallisiin palveluihin.",
     clarity: "Selkeä tieto", clarityText: "Tietoa, jonka voi tarkistaa ennen varaamista.",
     moments: "Erityiset hetket", momentsText: "Matkoja, jotka rakentuvat sinulle tärkeiden asioiden ympärille.",
-    regionEyebrow: "Ensimmäinen alue", regionTitle: "Salo, Mathildedal ja lounaisrannikko.",
-    regionText: "Lähtöpisteemme on lähellä, rauhallinen ja tarinoita täynnä oleva Suomi. Seuraavaksi konsepti voi kasvaa koko Varsinais-Suomeen ja myöhemmin koko maahan.",
-    destinations: "Katso kohteet", footer: "Aito Suomi · Español · English · Suomi",
+    regionEyebrow: "Ensimmäinen alue", regionTitle: "Tutustu Salon seutuun.",
+    regionText: "Aloita Salosta: majoitusta, kyliä, paikallista ruokaa, luontoa ja elämyksiä Suomen lounaisrannikolla.",
+    destinations: "Tutustu Salon seutuun", footer: "Aito Suomi · Español · English · Suomi",
   },
 } as const;
 
 export default async function Home({ locale = "es" }: { locale?: Locale }) {
   const siteContent = await getSiteContent(locale);
+  const supabase = await createSupabaseServerClient();
+  const { data: rootDestinations } = supabase
+    ? await supabase.from("destinations")
+        .select("id,slug,name_es,name_en,name_fi,region,description_es,description_en,description_fi,image_url,provider_url,sort_order")
+        .is("parent_id", null)
+        .eq("published", true)
+        .order("sort_order", { ascending: true })
+    : { data: null };
+  const regionOrder = ["naantali", "turku", "ahvenanmaa", "hanko"];
+  const availableRegions = (rootDestinations ?? []).filter((destination: { slug: string }) => destination.slug !== "salo");
+  const regionCards = [
+    ...regionOrder.map((slug) => availableRegions.find((destination: { slug: string }) => destination.slug === slug)),
+    ...availableRegions.filter((destination: { slug: string }) => !regionOrder.includes(destination.slug)),
+  ].filter((destination): destination is NonNullable<typeof destination> => Boolean(destination));
   const t = copy[locale];
   const prefix = locale === "es" ? "" : "/" + locale;
 
@@ -98,15 +115,44 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
           <p className="mt-5 text-lg leading-8 text-black/60">{t.exploreText}</p>
         </div>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
-            <Link key={category.key} href={prefix + "/experiencias?tipo=" + category.key} className="group rounded-3xl bg-white p-7 shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-soft">
-              <span className="text-4xl">{category.icon}</span>
-              <h3 className="mt-8 text-xl font-extrabold">{category[locale]}</h3>
-              <p className="mt-2 text-sm text-black/55">{t.selected}</p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-pine">{t.explore} <ArrowRight size={16} className="transition group-hover:translate-x-1" /></span>
-            </Link>
-          ))}
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((category, index) => {
+            const image = ["https://images.unsplash.com/photo-1749069262065-ed7f45b8153c?auto=format&fit=crop&fm=jpg&q=80&w=1800", "https://images.unsplash.com/photo-1758861356142-546a3822ab1a?auto=format&fit=crop&fm=jpg&q=80&w=2200", "https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=2200"][index % 3];
+            const teasers = locale === "fi"
+              ? ["Löydä oma rauhallinen tukikohta", "Löylyjä, lämpöä ja iltavaloa", "Meri, saaret ja kesäiset reitit", "Paikallisia makuja ja pieniä löytöjä", "Lähde poluille ja metsän rauhaan", "Hetkiä kahdestaan"]
+              : locale === "en"
+                ? ["Find your own peaceful hideaway", "Warm sauna moments in the evening light", "Sea, islands and summer routes", "Local flavours and little discoveries", "Follow trails into the quiet forest", "Time together, away from the rush"]
+                : ["Encuentra tu refugio tranquilo", "Sauna y calma bajo la luz del atardecer", "Mar, islas y rutas de verano", "Sabores locales y pequeños hallazgos", "Senderos y silencio del bosque", "Momentos para compartir"];
+            return <Link key={category.key} href={prefix + "/experiencias?tipo=" + category.key} className="group relative isolate min-h-[340px] overflow-hidden rounded-[1.75rem] bg-pine text-white shadow-sm ring-1 ring-black/5 transition duration-500 hover:-translate-y-1 hover:shadow-2xl">
+              <Image src={image} alt="" aria-hidden="true" fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="absolute inset-0 -z-20 object-cover transition duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#071915]/95 via-[#071915]/35 to-[#071915]/5" />
+              <div className="absolute left-5 top-5 rounded-full border border-white/25 bg-black/20 px-3 py-1.5 text-xs font-bold tracking-wide backdrop-blur">{category.icon} <span className="ml-1">{category[locale]}</span></div>
+              <div className="flex min-h-[340px] flex-col justify-end p-6 md:p-7">
+                <h3 className="font-display text-3xl leading-tight">{category[locale]}</h3>
+                <p className="mt-2 max-w-xs text-sm leading-6 text-white/80">{teasers[index % teasers.length]}</p>
+                <span className="mt-5 inline-flex items-center gap-2 font-extrabold text-[#f0c4a6]">{t.explore} <ArrowRight size={17} className="transition group-hover:translate-x-1" /></span>
+              </div>
+            </Link>;
+          })}
+        </div>
+      </section>
+
+      <section className="container-site pb-24">
+        <div className="grid overflow-hidden rounded-[2rem] bg-[#e9efe9] shadow-soft lg:grid-cols-[1.05fr_.95fr]">
+          <div className="relative min-h-[320px] overflow-hidden md:min-h-[470px]">
+            <Image src="https://images.unsplash.com/photo-1758861356142-546a3822ab1a?auto=format&fit=crop&fm=jpg&q=80&w=2200" alt={locale === "fi" ? "Sauna ja kesäilta suomalaisella mökillä" : locale === "en" ? "A sauna and a summer evening in Finland" : "Sauna y una tarde de verano en Finlandia"} fill sizes="(max-width: 1024px) 100vw, 52vw" className="object-cover transition duration-700 hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#071915]/55 via-transparent to-transparent" />
+            <span className="absolute bottom-6 left-6 rounded-full border border-white/30 bg-black/20 px-4 py-2 text-sm font-bold text-white backdrop-blur">{locale === "fi" ? "Kesä Suomessa · omassa tahdissa" : locale === "en" ? "Summer in Finland · at your own pace" : "Verano en Finlandia · a tu ritmo"}</span>
+          </div>
+          <div className="flex flex-col items-start justify-center p-8 md:p-12 lg:p-14">
+            <div className="eyebrow text-moss">{locale === "fi" ? "Loma, joka hengittää" : locale === "en" ? "Make room to slow down" : "Unas vacaciones para respirar"}</div>
+            <h2 className="mt-4 font-display text-4xl leading-tight md:text-5xl">{locale === "fi" ? "Kuvittele viikko, jolloin mihinkään ei ole kiire." : locale === "en" ? "Imagine a week with nowhere you need to rush." : "Imagina una semana sin tener que correr."}</h2>
+            <p className="mt-5 leading-7 text-black/65">{locale === "fi" ? "Aamukahvi mökin terassilla, retki pieneen rannikkokylään, paikallista ruokaa ja sauna auringon laskiessa. Kokoa omannäköisesi loma Salon seudun ja lounaisrannikon aidoista paikoista." : locale === "en" ? "Morning coffee on a cottage terrace, a trip to a small coastal village, local food and a sauna as the sun goes down. Shape your own holiday around authentic places in the Salo region and Finland’s southwest coast." : "Un café en la terraza, una visita a un pequeño pueblo costero, sabores locales y una sauna al atardecer. Diseña tus vacaciones con lugares auténticos de Salo y la costa suroeste de Finlandia."}</p>
+            <div className="mt-7 grid w-full gap-3 sm:grid-cols-3">
+              {[locale === "fi" ? "Majoitu luonnon lähellä" : locale === "en" ? "Stay close to nature" : "Duerme cerca de la naturaleza", locale === "fi" ? "Löydä paikalliset maut" : locale === "en" ? "Taste local flavours" : "Prueba sabores locales", locale === "fi" ? "Tutki omaan tahtiin" : locale === "en" ? "Explore at your pace" : "Explora a tu ritmo"].map((item, i) => <div key={item} className="rounded-2xl border border-black/5 bg-white/75 p-4"><span className="text-xs font-extrabold text-copper">0{i + 1}</span><p className="mt-2 text-sm font-bold leading-5">{item}</p></div>)}
+            </div>
+            <Link href={prefix + "/salo"} className="mt-8 inline-flex items-center gap-2 rounded-full bg-pine px-6 py-4 font-extrabold text-white transition hover:bg-ink">{locale === "fi" ? "Löydä Salon seutu" : locale === "en" ? "Discover the Salo region" : "Descubre la región de Salo"} <ArrowRight size={18} /></Link>
+          </div>
         </div>
       </section>
 
@@ -138,20 +184,73 @@ export default async function Home({ locale = "es" }: { locale?: Locale }) {
       </section>
 
       <section className="container-site py-24">
-        <div className="rounded-[2rem] bg-[#e9efe9] p-8 md:p-14">
-          <div className="max-w-3xl">
+        <Link href={prefix + "/salo"} className="group grid overflow-hidden rounded-[2rem] bg-[#e9efe9] shadow-sm ring-1 ring-black/5 transition hover:shadow-xl md:grid-cols-2">
+          <div className="relative min-h-[300px] overflow-hidden md:min-h-[440px]">
+            <Image src="https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=2200" alt={locale === "fi" ? "Suomen saariston kesämaisema" : locale === "en" ? "Summer scenery in the Finnish archipelago" : "Paisaje de verano del archipiélago finlandés"} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition duration-700 group-hover:scale-105" />
+            <span className="absolute left-6 top-6 rounded-full bg-white/90 px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-ink">Salo · Varsinais-Suomi</span>
+          </div>
+          <div className="flex flex-col items-start justify-center p-8 md:p-12 lg:p-16">
             <div className="eyebrow text-moss">{t.regionEyebrow}</div>
             <h2 className="mt-3 font-display text-4xl md:text-6xl">{t.regionTitle}</h2>
             <p className="mt-5 text-lg leading-8 text-black/60">{t.regionText}</p>
-            <Link href={prefix + "/destinos"} className="mt-8 inline-flex items-center gap-2 font-extrabold text-pine">{t.destinations} <ArrowRight size={18}/></Link>
+            <span className="mt-8 inline-flex items-center gap-2 rounded-full bg-pine px-6 py-4 font-extrabold text-white">{t.destinations} <ArrowRight size={18} className="transition group-hover:translate-x-1"/></span>
           </div>
-        </div>
+        </Link>
+
+        <section className="mt-12" aria-labelledby="more-destinations">
+          <div className="mb-7 max-w-3xl">
+            <div className="eyebrow text-copper">{locale === "fi" ? "Tutustu myös" : locale === "en" ? "Explore more of Finland" : "Descubre más de Finlandia"}</div>
+            <h2 id="more-destinations" className="mt-3 font-display text-3xl md:text-5xl">{locale === "fi" ? "Rannikkokaupunkeja ja saaristoa" : locale === "en" ? "Coastal towns and island life" : "Ciudades costeras e islas"}</h2>
+            <p className="mt-4 max-w-2xl leading-7 text-black/60">{locale === "fi" ? "Aloita Salon seudulta ja jatka matkaa muihin persoonallisiin rannikko- ja saaristokohteisiin. Lisää kohteita voidaan julkaista myöhemmin hallintapaneelista." : locale === "en" ? "Start in the Salo region and continue to distinctive coastal and island destinations. More places can be added later from the admin panel." : "Empieza en la región de Salo y continúa hacia destinos costeros e insulares con personalidad. Podremos añadir más lugares desde el panel de administración."}</p>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {regionCards.map((destination: { id: string; slug: string; name_es: string; name_en: string; name_fi: string; region: string; description_es: string; description_en: string; description_fi: string; image_url: string | null; sort_order: number }, index: number) => {
+              const title = locale === "fi" ? destination.name_fi : locale === "en" ? destination.name_en : destination.name_es;
+              const description = locale === "fi" ? destination.description_fi : locale === "en" ? destination.description_en : destination.description_es;
+              const image = destination.image_url || [
+                "https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=1200",
+                "https://images.unsplash.com/photo-1749069262065-ed7f45b8153c?auto=format&fit=crop&fm=jpg&q=80&w=1200",
+                "https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=1200",
+                "https://images.unsplash.com/photo-1749069262065-ed7f45b8153c?auto=format&fit=crop&fm=jpg&q=80&w=1200",
+              ][index % 4];
+              return <Link key={destination.id} href={(locale === "fi" ? "/fi/salo/kohteet/" : locale === "en" ? "/en/salo/destinations/" : "/salo/destinos/") + destination.slug} className="group overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-xl">
+                <div className="relative h-52 overflow-hidden bg-[#e9efe9]">
+                  <Image src={image} alt={locale === "fi" ? "Matkailun inspiraatiokuva, tarkista kohteen tiedot" : locale === "en" ? "Travel inspiration image; check destination details" : "Imagen de inspiración; consulta los detalles del destino"} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-700 group-hover:scale-105" />
+                  <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-extrabold text-ink">{destination.region}</span>
+                </div>
+                <div className="p-5">
+                  <h3 className="font-display text-2xl">{title}</h3>
+                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-black/60">{description}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 font-extrabold text-pine">{locale === "fi" ? "Tutustu kohteeseen" : locale === "en" ? "Explore destination" : "Descubrir destino"} <ArrowRight size={16} className="transition group-hover:translate-x-1" /></span>
+                </div>
+              </Link>;
+            })}
+          </div>
+        </section>
       </section>
     </main>
     <footer className="border-t border-black/10 py-10">
       <div className="container-site flex flex-col justify-between gap-4 text-sm text-black/50 md:flex-row">
-        <span>© 2026 Finnexprience</span><span>{t.footer}</span>
+        <span>© 2026 Finnexprience</span><div className="flex flex-wrap items-center gap-x-5 gap-y-2"><span>{t.footer}</span><a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="underline decoration-black/20 underline-offset-4 transition hover:text-pine">{locale === "fi" ? "Kuvituskuvat: Unsplash" : locale === "en" ? "Inspiration photography: Unsplash" : "Fotografía de inspiración: Unsplash"}</a></div>
       </div>
     </footer>
   </>;
 }
+
+
+export const metadata: Metadata = {
+  title: "Finnexprience | Descubre la Finlandia auténtica",
+  description: "Planifica una escapada tranquila en Finlandia: cabañas, sauna, archipiélago, naturaleza y experiencias locales en la región de Salo.",
+  alternates: {
+    canonical: "/",
+    languages: { es: "/", fi: "/fi", en: "/en" },
+  },
+  openGraph: {
+    title: "Finnexprience | Descubre la Finlandia auténtica",
+    description: "Cabañas, sauna, archipiélago y experiencias locales en el suroeste de Finlandia.",
+    url: "/",
+    siteName: "Finnexprience",
+    locale: "es_ES",
+    type: "website",
+  },
+};
