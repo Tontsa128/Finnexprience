@@ -61,6 +61,12 @@ alter table site_settings enable row level security;
 alter table pages enable row level security;
 alter table hero_slides enable row level security;
 
+-- Allow an authenticated user to verify only their own admin membership.
+drop policy if exists "admins can read own admin record" on public.admin_users;
+create policy "admins can read own admin record"
+  on public.admin_users for select to authenticated
+  using (user_id = auth.uid());
+
 create or replace function public.is_admin()
 returns boolean
 language sql
