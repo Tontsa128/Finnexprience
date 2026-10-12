@@ -23,10 +23,24 @@ create table if not exists pages (
   content_en text not null default '',
   content_fi text not null default '',
   hero_image text,
+  seo_title_es text not null default '',
+  seo_title_en text not null default '',
+  seo_title_fi text not null default '',
+  seo_description_es text not null default '',
+  seo_description_en text not null default '',
+  seo_description_fi text not null default '',
   published boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.pages
+  add column if not exists seo_title_es text not null default '',
+  add column if not exists seo_title_en text not null default '',
+  add column if not exists seo_title_fi text not null default '',
+  add column if not exists seo_description_es text not null default '',
+  add column if not exists seo_description_en text not null default '',
+  add column if not exists seo_description_fi text not null default '';
 
 create table if not exists hero_slides (
   id uuid primary key default gen_random_uuid(),
@@ -77,8 +91,41 @@ on conflict(key) do nothing;
 -- After creating your Supabase Auth user, add it here:
 -- insert into admin_users(user_id,email) values ('AUTH-USER-UUID','you@example.com');
 
--- Storage: create a public bucket called media in the Supabase dashboard.
--- The admin UI should upload only after the signed-in user has passed is_admin().
+-- Storage: create the public media bucket and restrict writes to authenticated admins.
+-- Existing uploaded objects remain public because the site uses public image URLs.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'media',
+  'media',
+  true,
+  10485760,
+  array['image/jpeg', 'image/png', 'image/webp', 'image/avif']
+)
+on conflict (id) do update
+set public = excluded.public,
+    file_size_limit = excluded.file_size_limit,
+    allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "public can read media objects" on storage.objects;
+create policy "public can read media objects"
+on storage.objects for select
+using (bucket_id = 'media');
+
+drop policy if exists "admins upload media objects" on storage.objects;
+create policy "admins upload media objects"
+on storage.objects for insert to authenticated
+with check (bucket_id = 'media' and public.is_admin());
+
+drop policy if exists "admins update media objects" on storage.objects;
+create policy "admins update media objects"
+on storage.objects for update to authenticated
+using (bucket_id = 'media' and public.is_admin())
+with check (bucket_id = 'media' and public.is_admin());
+
+drop policy if exists "admins delete media objects" on storage.objects;
+create policy "admins delete media objects"
+on storage.objects for delete to authenticated
+using (bucket_id = 'media' and public.is_admin());
 
 
 create table if not exists destinations (
@@ -93,6 +140,7 @@ create table if not exists destinations (
   description_fi text not null default '',
   image_url text,
   category text not null default 'destination',
+  provider_url text,
   featured boolean not null default false,
   published boolean not null default false,
   sort_order integer not null default 0,
@@ -100,6 +148,7 @@ create table if not exists destinations (
   updated_at timestamptz not null default now()
 );
 
+alter table destinations add column if not exists provider_url text;
 alter table destinations enable row level security;
 drop policy if exists "public can read published destinations" on destinations;
 create policy "public can read published destinations" on destinations for select using (published = true or public.is_admin());
@@ -132,3 +181,82 @@ create policy "admins read trip requests" on trip_requests
 drop policy if exists "admins manage trip requests" on trip_requests;
 create policy "admins manage trip requests" on trip_requests
   for update using (public.is_admin()) with check (public.is_admin());
+
+
+-- Destination hierarchy and image gallery for owner-managed cities, villages and subpages.
+-- Safe to run on an existing Finnexprience Supabase project.
+alter table public.destinations
+  add column if not exists parent_id uuid references public.destinations(id) on delete set null,
+  add column if not exists gallery_urls jsonb not null default '[]'::jsonb,
+  add column if not exists image_alt_es text not null default '',
+  add column if not exists image_alt_en text not null default '',
+  add column if not exists image_alt_fi text not null default '',
+  add column if not exists seo_title_es text not null default '',
+  add column if not exists seo_title_en text not null default '',
+  add column if not exists seo_title_fi text not null default '',
+  add column if not exists seo_description_es text not null default '',
+  add column if not exists seo_description_en text not null default '',
+  add column if not exists seo_description_fi text not null default '';
+
+create index if not exists destinations_parent_id_idx on public.destinations(parent_id);
+create index if not exists destinations_published_sort_idx on public.destinations(published, sort_order);
+
+-- Seed the next four top-level regions. These are editorial starter records, not partner endorsements.
+insert into public.destinations
+  (slug, name_es, name_en, name_fi, region, description_es, description_en, description_fi, category, provider_url, featured, published, sort_order, image_alt_es, image_alt_en, image_alt_fi)
+values
+  ('naantali', 'Naantali', 'Naantali', 'Naantali', 'Varsinais-Suomi',
+   'Una ciudad costera con un casco antiguo de madera, ambiente de verano y experiencias junto al mar. Consulta la información turística oficial para planificar tu visita.',
+   'A coastal town with a wooden old town, a lively summer atmosphere and experiences by the sea. Visit the official tourism source to plan your trip.',
+   'Merellinen kesäkaupunki, puutalokortteleita ja elämyksiä meren äärellä. Tarkista ajantasaiset matkailutiedot virallisesta lähteestä.',
+   'destination', 'https://www.visitnaantali.com/', true, true, 20,
+   'Costa y ambiente de verano en Finlandia', 'Coastline and summer atmosphere in Finland', 'Suomalainen rannikko ja kesätunnelma'),
+  ('turku', 'Turku', 'Turku', 'Turku', 'Varsinais-Suomi',
+   'Una ciudad junto al río Aura, con historia, cultura, restaurantes y acceso al archipiélago. Comprueba los detalles prácticos en la web turística oficial.',
+   'A city on the Aura River with history, culture, restaurants and access to the archipelago. Check practical details with the official tourism website.',
+   'Aurajoen varrella sijaitseva kaupunki, jossa yhdistyvät historia, kulttuuri, ravintolat ja saariston läheisyys. Tarkista ajantasaiset tiedot viralliselta matkailusivustolta.',
+   'destination', 'https://www.visitturku.fi/', true, true, 30,
+   'Inspiración de costa finlandesa', 'Finnish coastal travel inspiration', 'Suomalaisen rannikon matkailuinspiraatio'),
+  ('ahvenanmaa', 'Åland', 'Åland Islands', 'Ahvenanmaa', 'Islas Åland',
+   'Un destino insular para descubrir paisajes marítimos, pueblos, rutas ciclistas y cultura local. Comprueba conexiones y servicios con fuentes oficiales.',
+   'An island destination for maritime scenery, villages, cycling routes and local culture. Verify transport connections and services with official sources.',
+   'Saaristokohde, jossa voi tutustua merimaisemiin, kyliin, pyöräilyreitteihin ja paikalliseen kulttuuriin. Tarkista yhteydet ja palvelut virallisista lähteistä.',
+   'destination', 'https://www.visitaland.com/', true, true, 40,
+   'Inspiración de archipiélago finlandés', 'Finnish archipelago travel inspiration', 'Suomalaisen saariston matkailuinspiraatio'),
+  ('hanko', 'Hanko', 'Hanko', 'Hanko', 'Uusimaa',
+   'Una ciudad costera conocida por sus playas, villas históricas y ambiente de verano. Consulta la información oficial antes de viajar.',
+   'A coastal town known for its beaches, historic villas and summer atmosphere. Check the official tourism information before travelling.',
+   'Rantakaupunki, joka tunnetaan hiekkarannoista, historiallisista huviloista ja kesätunnelmasta. Tarkista matkailutiedot virallisesta lähteestä.',
+   'destination', 'https://visithanko.fi/', true, true, 50,
+   'Inspiración de vacaciones costeras en Finlandia', 'Finnish coastal holiday inspiration', 'Suomalaisen rannikkoloman inspiraatio')
+on conflict (slug) do nothing;
+
+
+-- Media rights and editable hero slides (migration 0006).
+-- Content governance fields for image rights and fully editable multilingual hero slides.
+-- Safe to run on an existing Finnexprience Supabase project.
+alter table public.hero_slides
+  add column if not exists source_url text not null default '',
+  add column if not exists image_credit text not null default '',
+  add column if not exists license_note text not null default '';
+
+alter table public.destinations
+  add column if not exists image_source_url text not null default '',
+  add column if not exists image_credit text not null default '',
+  add column if not exists image_license_note text not null default '',
+  add column if not exists content_checked_at date;
+
+create index if not exists hero_slides_active_order_idx
+  on public.hero_slides(active, sort_order);
+
+
+-- CMS page SEO metadata (migration 0007).
+-- Localized SEO metadata for owner-managed CMS pages.
+-- Safe to run on an existing Finnexprience Supabase project.
+alter table public.pages
+  add column if not exists seo_title_es text not null default '',
+  add column if not exists seo_title_en text not null default '',
+  add column if not exists seo_title_fi text not null default '',
+  add column if not exists seo_description_es text not null default '',
+  add column if not exists seo_description_en text not null default '',
+  add column if not exists seo_description_fi text not null default '';
