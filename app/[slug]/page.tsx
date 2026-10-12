@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import CmsPage from "@/components/CmsPage";
+import { getCmsPageMetadata } from "@/lib/cms-page-metadata";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return { title: `${slug.replace(/-/g, " ")} | Finnexprience`, description: "Descubre Finlandia con Finnexprience." };
+  return getCmsPageMetadata(slug, "es");
 }
 
 export default async function SpanishCmsPage({ params }: { params: Promise<{ slug: string }> }) {
