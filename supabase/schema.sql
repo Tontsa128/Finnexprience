@@ -23,10 +23,24 @@ create table if not exists pages (
   content_en text not null default '',
   content_fi text not null default '',
   hero_image text,
+  seo_title_es text not null default '',
+  seo_title_en text not null default '',
+  seo_title_fi text not null default '',
+  seo_description_es text not null default '',
+  seo_description_en text not null default '',
+  seo_description_fi text not null default '',
   published boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.pages
+  add column if not exists seo_title_es text not null default '',
+  add column if not exists seo_title_en text not null default '',
+  add column if not exists seo_title_fi text not null default '',
+  add column if not exists seo_description_es text not null default '',
+  add column if not exists seo_description_en text not null default '',
+  add column if not exists seo_description_fi text not null default '';
 
 create table if not exists hero_slides (
   id uuid primary key default gen_random_uuid(),
