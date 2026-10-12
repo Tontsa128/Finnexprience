@@ -184,6 +184,6 @@ A feature is not complete just because its code was committed. It is complete wh
 
 The professional CMS work is maintained in the `feature/finnexprience-professional-cms` branch. It includes localized destination detail pages, destination hierarchy and image galleries, multilingual hero-slide editing, image source/credit/licence metadata, and a three-language CMS page draft preview. The admin uses Supabase Auth and Row Level Security; it is not fully enabled until the project database and Vercel environment variables are configured.
 
-For an existing Supabase project, run `supabase/migrations/0005_destination_hierarchy.sql` and then `supabase/migrations/0006_media_rights_and_hero_editor.sql` in the SQL Editor if they have not already been applied. For a fresh project, use the complete `supabase/schema.sql`. Never expose the Supabase service-role key in browser code.
+For an existing Supabase project, run `supabase/migrations/0005_destination_hierarchy.sql`, `supabase/migrations/0006_media_rights_and_hero_editor.sql`, and `supabase/migrations/0007_cms_page_seo.sql` in order if they have not already been applied. For a fresh project, use the complete `supabase/schema.sql`. Never expose the Supabase service-role key in browser code.
 
-The hero editor records image source, creator/rights credit and licence notes. Keep evidence of permissions for each production image; source metadata alone does not grant permission to use an image.
+The hero editor records image source, creator/rights credit and licence notes. CMS pages support localized SEO titles and descriptions, and public page metadata uses the matching language. Keep evidence of permissions for each production image; source metadata alone does not grant permission to use an image.
