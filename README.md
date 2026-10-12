@@ -178,3 +178,12 @@ Use environment-specific Vercel variables for deployment. The public browser key
 ## Definition of done
 
 A feature is not complete just because its code was committed. It is complete when the relevant build passes, the page is checked in a deployed preview, links and language variants work, content is sourced and legally usable, and any required backend configuration is verified.
+
+
+## Content-management update (October 2026)
+
+The professional CMS work is maintained in the `feature/finnexprience-professional-cms` branch. It includes localized destination detail pages, destination hierarchy and image galleries, multilingual hero-slide editing, image source/credit/licence metadata, and a three-language CMS page draft preview. The admin uses Supabase Auth and Row Level Security; it is not fully enabled until the project database and Vercel environment variables are configured.
+
+For an existing Supabase project, run `supabase/migrations/0005_destination_hierarchy.sql` and then `supabase/migrations/0006_media_rights_and_hero_editor.sql` in the SQL Editor if they have not already been applied. For a fresh project, use the complete `supabase/schema.sql`. Never expose the Supabase service-role key in browser code.
+
+The hero editor records image source, creator/rights credit and licence notes. Keep evidence of permissions for each production image; source metadata alone does not grant permission to use an image.
