@@ -20,6 +20,7 @@ export default function Hero({ content, locale = "es" }: { content: SiteContent;
   const [index, setIndex] = useState(0);
   const slide = content.slides[index] ?? content.slides[0];
   const text = labels[locale];
+  const sourceUrl = (() => { try { const url = new URL(slide?.sourceUrl || ""); return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null; } catch { return null; } })();
 
   useEffect(() => {
     if (content.slides.length < 2) return;
@@ -51,7 +52,7 @@ export default function Hero({ content, locale = "es" }: { content: SiteContent;
         <span>{locale === "fi" ? "Aitoja paikallisia kohteita · suorat linkit palveluntarjoajille" : locale === "en" ? "Authentic local places · direct links to providers" : "Lugares auténticos · enlaces directos a proveedores"}</span>
       </div>
     </div>
-    {(slide.credit || slide.sourceUrl) && <div className="absolute bottom-2 left-4 z-20 max-w-[65%] text-[10px] leading-4 text-white/75 md:left-10">{slide.credit && <span>{slide.credit}</span>}{slide.credit && slide.sourceUrl && " · "}{slide.sourceUrl && <a href={slide.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{locale === "fi" ? "Kuvan lähde" : locale === "en" ? "Image source" : "Fuente de imagen"} ↗</a>}</div>}
+    {(slide.credit || slide.sourceUrl) && <div className="absolute bottom-2 left-4 z-20 max-w-[65%] text-[10px] leading-4 text-white/75 md:left-10">{slide.credit && <span>{slide.credit}</span>}{slide.credit && slide.sourceUrl && " · "}{sourceUrl && <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{locale === "fi" ? "Kuvan lähde" : locale === "en" ? "Image source" : "Fuente de imagen"} ↗</a>}</div>}
     <div className="absolute bottom-8 right-6 z-20 flex items-center gap-2 md:right-10">
       <button onClick={() => setIndex((current) => (current - 1 + content.slides.length) % content.slides.length)} className="rounded-full border border-white/30 bg-black/15 p-3 backdrop-blur" aria-label={text.previous}><ChevronLeft/></button>
       <div className="flex gap-2">{content.slides.map((currentSlide,i)=><button key={currentSlide.id} onClick={()=>setIndex(i)} aria-label={text.image + " " + (i+1)} className={"h-2 rounded-full transition-all " + (i===index ? "w-10 bg-white":"w-2 bg-white/50")}/>)}</div>
