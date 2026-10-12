@@ -81,5 +81,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  return [...new Map(entries.map((entry) => [entry.url, entry])).values()];
+  const seen = new Set<string>();
+  return entries.filter((entry) => {
+    const key = String(entry.url);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
