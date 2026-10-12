@@ -19,6 +19,8 @@ export async function getSiteContent(locale: Locale = "es"): Promise<SiteContent
       image: slide.image_url,
       alt: alt || slide.alt_es || "Finnish travel",
       eyebrow: eyebrow || slide.eyebrow_es || "Authentic Finland",
+      credit: slide.image_credit || "",
+      sourceUrl: slide.source_url || "",
     };
   });
 
