@@ -125,7 +125,7 @@ export default function AdminPage(){
  async function savePage(){
   const slug=String(page?.slug||"").trim().toLowerCase();
   if(!slug){setError("Anna sivulle URL-tunnus.");return;}
-  if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)||["admin","api","fi","en"].includes(slug)){setError("URL-tunnuksen tulee sisältää vain pieniä aakkosia, numeroita ja väliviivoja. Tämä tunnus on varattu.");return;}
+  if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)||["admin","api","fi","en","salo","destinos","experiencias","planifica"].includes(slug)){setError("URL-tunnuksen tulee sisältää vain pieniä aakkosia, numeroita ja väliviivoja, eikä se saa varata sivuston järjestelmä- tai pääreittiä.");return;}
   setSaving(true);
   const payload={...page,hero_image:page.hero_image||null,updated_at:new Date().toISOString()};
   const result=page.id?await supabase.from("pages").update(payload).eq("id",page.id):await supabase.from("pages").insert(payload);
