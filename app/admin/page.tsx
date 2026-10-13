@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
-import { FileText, ImagePlus, LayoutDashboard, LogIn, Plus, Save, Trash2, Upload, X, MapPin, Inbox } from "lucide-react";
+import { FileText, ImagePlus, LayoutDashboard, LogIn, Plus, Save, Trash2, Upload, X, MapPin, Inbox, Github } from "lucide-react";
 
 type Slide={id:string;image_url:string;alt_es:string;eyebrow_es:string;sort_order:number;active:boolean};
 type Page={id:string;slug:string;title_es:string;title_en:string;title_fi:string;content_es:string;content_en:string;content_fi:string;hero_image:string|null;published:boolean};
@@ -54,6 +54,14 @@ export default function AdminPage(){
   if(e)setError(e.message);
   await load();
  }
+ async function loginWithGithub(){
+  setError("");setLoading(true);
+  const {error:e}=await supabase.auth.signInWithOAuth({
+   provider:"github",
+   options:{redirectTo:typeof window!=="undefined"?window.location.origin+"/admin":undefined}
+  });
+  if(e){setError("GitHub-kirjautuminen ei käynnistynyt. Tarkista, että GitHub-provider on otettu käyttöön Supabasessa ja callback-osoite on määritetty. "+e.message);setLoading(false);}
+ }
  async function logout(){await supabase.auth.signOut();setSession(null);}
  async function saveHome(){
   setSaving(true);
@@ -81,7 +89,7 @@ export default function AdminPage(){
  async function deletePage(id:string){await supabase.from("pages").delete().eq("id",id);await load();}
 
  if(loading)return <main className="grid min-h-screen place-items-center bg-ink text-white"><div className="text-center"><div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-white"/><p className="mt-4 text-white/60">Ladataan hallintaa…</p></div></main>;
- if(!session)return <main className="min-h-screen bg-ink px-5 py-16 text-white"><div className="mx-auto max-w-md pt-20"><div className="text-2xl font-extrabold">Finn<span className="text-[#e8b28f]">exprience</span></div><h1 className="mt-10 font-display text-5xl">Pääkäyttäjä</h1><p className="mt-4 text-white/55">Kirjaudu Supabase Auth -tunnuksella. Vain admin_users-tauluun lisätyt käyttäjät pääsevät sisältöön.</p><div className="mt-8 space-y-4"><input value={email} onChange={e=>setEmail(e.target.value)} className="w-full rounded-2xl bg-white/10 p-4 outline-none" placeholder="Sähköposti" /><input value={password} onChange={e=>setPassword(e.target.value)} type="password" className="w-full rounded-2xl bg-white/10 p-4 outline-none" placeholder="Salasana" /><button onClick={login} className="flex w-full items-center justify-center gap-2 rounded-full bg-[#e8b28f] p-4 font-extrabold text-ink"><LogIn size={18}/> Kirjaudu</button>{error&&<p className="rounded-2xl bg-red-500/15 p-4 text-sm text-red-200">{error}</p>}</div></div></main>;
+ if(!session)return <main className="min-h-screen bg-ink px-5 py-16 text-white"><div className="mx-auto max-w-md pt-20"><div className="text-2xl font-extrabold">Finn<span className="text-[#e8b28f]">exprience</span></div><h1 className="mt-10 font-display text-5xl">Pääkäyttäjä</h1><p className="mt-4 text-white/55">Kirjaudu Supabase Auth -tunnuksella. Vain admin_users-tauluun lisätyt käyttäjät pääsevät sisältöön.</p><div className="mt-8 space-y-4"><input value={email} onChange={e=>setEmail(e.target.value)} className="w-full rounded-2xl bg-white/10 p-4 outline-none" placeholder="Sähköposti" /><input value={password} onChange={e=>setPassword(e.target.value)} type="password" className="w-full rounded-2xl bg-white/10 p-4 outline-none" placeholder="Salasana" /><button onClick={login} className="flex w-full items-center justify-center gap-2 rounded-full bg-[#e8b28f] p-4 font-extrabold text-ink"><LogIn size={18}/> Kirjaudu sähköpostilla</button><button onClick={loginWithGithub} className="flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 p-4 font-bold text-white"><Github size={18}/> Jatka GitHubilla</button>{error&&<p className="rounded-2xl bg-red-500/15 p-4 text-sm text-red-200">{error}</p>}</div></div></main>;
 
  return <main className="min-h-screen bg-[#f5f6f2] text-ink">
   <header className="sticky top-0 z-30 border-b bg-white/95 backdrop-blur"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4"><div className="font-extrabold">Finn<span className="text-copper">exprience</span> <span className="font-normal text-black/35">/ Admin</span></div><button onClick={logout} className="rounded-full border px-4 py-2 text-sm font-bold">Kirjaudu ulos</button></div></header>
