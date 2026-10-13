@@ -34,8 +34,14 @@ export default function AdminPage(){
   setLoading(false);
  }
  useEffect(()=>{
-  if(!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY){
-   setError("Supabase ei ole vielä määritetty Vercelissä. Lisää NEXT_PUBLIC_SUPABASE_URL ja NEXT_PUBLIC_SUPABASE_ANON_KEY projektin Environment Variables -asetuksiin ja käynnistä uusi deployment.");
+  const supabaseUrl=process.env.NEXT_PUBLIC_SUPABASE_URL;
+  let validUrl=false;
+  try {
+   const parsed=new URL(supabaseUrl||"");
+   validUrl=parsed.protocol==="https:"||parsed.protocol==="http:";
+  } catch {}
+  if(!validUrl || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY){
+   setError("Supabase-asetukset puuttuvat tai URL on virheellinen. Lisää Vercelin Environment Variables -asetuksiin oikea projektin URL (muodossa https://….supabase.co) sekä NEXT_PUBLIC_SUPABASE_ANON_KEY ja käynnistä uusi deployment.");
    setLoading(false);
    return;
   }
