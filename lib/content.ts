@@ -5,6 +5,8 @@ export type HeroSlide = {
   image: string;
   alt: string;
   eyebrow: string;
+  credit?: string;
+  sourceUrl?: string;
 };
 
 export type SiteContent = {
@@ -37,9 +39,9 @@ export const defaultContent: SiteContent = {
   ctaPrimary: { es: "Planifica mi viaje", en: "Plan my trip", fi: "Suunnittele matkani" },
   ctaSecondary: { es: "Explorar experiencias", en: "Explore experiences", fi: "Tutustu elämyksiin" },
   slides: [
-    { id: "summer", image: "/images/hero-summer.svg", alt: "Finnish summer cottage by a lake", eyebrow: "Finnish summer" },
-    { id: "sauna", image: "/images/hero-sauna.svg", alt: "Finnish lakeside sauna at sunset", eyebrow: "Sauna & wellbeing" },
-    { id: "archipelago", image: "/images/hero-archipelago.svg", alt: "Finnish archipelago in summer", eyebrow: "Archipelago life" }
+    { id: "sauna", image: "https://images.unsplash.com/photo-1758861356142-546a3822ab1a?auto=format&fit=crop&fm=jpg&q=80&w=2200", alt: "Sauna by a lake in Finland at evening", eyebrow: "Sauna & wellbeing" },
+    { id: "summer", image: "https://images.unsplash.com/photo-1749069262065-ed7f45b8153c?auto=format&fit=crop&fm=jpg&q=80&w=1800", alt: "Finnish lakeside cottage among trees", eyebrow: "Finnish summer" },
+    { id: "archipelago", image: "https://images.unsplash.com/photo-1609114503421-387ba57652b2?auto=format&fit=crop&fm=jpg&q=80&w=2200", alt: "Finnish archipelago and summer sea", eyebrow: "Archipelago life" }
   ]
 };
 

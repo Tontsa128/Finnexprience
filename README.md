@@ -35,6 +35,17 @@ Research observations:
 - Särkisalo's appeal includes coastal nature, islands, beaches, cycling and a relaxed summer harbour atmosphere.
 - These facts guide the content plan; they do not grant permission to copy another site's photos, text, branding or design.
 
+## Homepage visual direction and image rights
+
+The homepage has been updated with a photographic hero, stronger location framing, image-led experience cards, and a story section around a slower Finnish summer holiday. The Spanish default remains unchanged, with Finnish and English versions using the same layout and localized copy.
+
+Current inspiration photographs are served from Unsplash's image CDN:
+- Sauna interior with lake view: https://unsplash.com/photos/cozy-cabin-with-wood-stove-overlooking-a-serene-lake-j9H1arwi_ao
+- Finnish lakeside cottage in forest: https://unsplash.com/photos/a-cabin-sits-among-lush-green-trees-u1rbvJrX2MQ
+- Archipelago/sailing inspiration: https://unsplash.com/s/photos/finnish-archipelago
+
+These are inspirational editorial images, not evidence that a pictured building, sauna or view belongs to a specific Salo-region provider. Do not use them as accommodation listing photos or imply that they depict a named partner. Before production launch, confirm image URLs, keep a source/credit record, and replace generic inspiration imagery with approved photographs of the actual destination where available. For performance and reliability, consider moving approved images to managed storage and adding responsive local/CDN variants.
+
 ## Customer experience and information architecture
 
 ### Main navigation
@@ -60,7 +71,9 @@ The goal is for the site owner to manage content without editing source code for
 
 ### Target admin capabilities
 - Secure owner login.
-- Create, edit, preview, publish/unpublish and delete pages and destination listings.
+- Create, edit, publish/unpublish and delete pages and destination listings.
+- Organize destinations hierarchically: top-level regions → cities/villages → child pages for accommodation, services, events and experiences.
+- Upload a cover image and multiple gallery images for each destination or subpage.
 - Upload images, write useful alternative text, reorder gallery/hero images and select a cover image.
 - Edit Spanish, Finnish and English titles, descriptions, calls to action and SEO metadata.
 - Maintain provider name, official website, address/area, categories, source URL, image rights/credit and last-verified date.
@@ -70,16 +83,16 @@ The goal is for the site owner to manage content without editing source code for
 ### Current implementation notes
 - The admin UI is in `app/admin/page.tsx`.
 - Browser-side Supabase configuration is in `lib/supabase-browser.ts`.
-- The directory categories, area descriptions and curated listings in `lib/salo-directory.ts` and `lib/salo-listings.ts` are still code-managed. Published CMS destination records from Supabase are now shown on the Salo directory landing page and link to localized detail routes.
-- The admin page has UI flows for homepage hero-image upload, destination-image upload/preview, multilingual homepage hero text, page editing, destination records and incoming trip requests. Hero slides currently use default Spanish alt/eyebrow text when created; the admin does not yet provide full per-language slide editing, ordering controls or active/inactive controls.
+- The directory categories, area descriptions and curated listings in `lib/salo-directory.ts` and `lib/salo-listings.ts` are still code-managed. Published CMS destination records from Supabase are shown on the Salo directory landing page and homepage regional cards. Destination records support parent/child hierarchy, gallery image URLs and localized cover-image alt text through migration `supabase/migrations/0005_destination_hierarchy.sql`.
+- The admin page supports homepage hero-image upload, destination cover/gallery uploads, parent/child destination selection, multilingual homepage text, editable destination/page records and incoming trip requests. Hero slides can be edited in Spanish, English and Finnish, reordered, activated/deactivated, and given source URL, creator/rights credit and licence notes. CMS pages include a three-language draft preview, URL-slug validation, and localized SEO titles/descriptions. Published CMS page metadata uses those SEO fields when supplied and falls back to the page title/content excerpt. Destination records include image-source, credit/licence and content-review-date fields.
 - The admin expects Supabase. A missing-configuration fallback prevents the build from failing, but **does not** make login, database persistence or image upload work by itself.
-- Published CMS destinations appear on the Salo directory landing page and have Spanish, Finnish and English detail routes. They do not replace the hard-coded categories, area pages or curated listings. Published admin-managed `pages` records now render on `/{slug}`, `/fi/{slug}` and `/en/{slug}` using the matching language fields. These routes require Supabase configuration and a published record; there is not yet a dedicated draft preview or editable SEO metadata workflow.
+- Published CMS destinations appear on the Salo directory landing page and have Spanish, Finnish and English detail routes. Destination detail pages display the image credit/source link and content review date when supplied. They do not replace the hard-coded categories, area pages or curated listings. Published admin-managed `pages` records render on `/{slug}`, `/fi/{slug}` and `/en/{slug}` using the matching language fields. The sitemap includes published CMS pages and destinations with language alternates. Public routes require Supabase configuration and a published record; the admin editor has an internal three-language preview, but there is no public draft-preview URL.
 - To enable the admin for production, configure Supabase and Vercel using the checklist below. Never commit secrets or expose a `service_role` key in browser code.
 
 ### Supabase and admin setup checklist
 
 1. Create a Supabase project and open its **SQL Editor**.
-2. Run the complete `supabase/schema.sql` script. It creates the application tables, Row Level Security policies, the public `media` image bucket (10 MiB upload limit; JPEG, PNG, WebP and AVIF), and policies that allow public image reads but restrict uploads, updates and deletes to signed-in users listed as admins.
+2. For a new project, run the complete `supabase/schema.sql` script. For an existing project, run the migrations in order if they have not already been applied: `0005_destination_hierarchy.sql`, `0006_media_rights_and_hero_editor.sql`, `0007_cms_page_seo.sql`, then `0008_admin_users_self_read.sql` (all in `supabase/migrations/`). Migration 0005 adds parent/child destinations and galleries, and seeds Naantali, Turku, Åland and Hanko. Migration 0006 adds image-source, credit/licence and review-date fields plus hero editor metadata. Migration 0007 adds localized SEO fields for CMS pages. Migration 0008 lets a signed-in user read only their own admin membership row, which is required by the admin login check under Row Level Security. The starter destination records are editorial, not provider partnerships.
 3. In Supabase **Authentication → Users**, create the owner login account and copy its user UUID.
 4. In the SQL Editor, register that account as an admin. Replace the sample UUID and email with the values from your account:
    ```sql
@@ -96,7 +109,10 @@ Required Vercel environment variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-Set them for the relevant Preview and Production environments, then redeploy. Use only the public/anon or publishable browser key; protect database access with authentication and Row Level Security.
+Optional:
+- `NEXT_PUBLIC_SITE_URL` — canonical public site origin used by the sitemap (set this if using a custom domain; default is `https://finnexprience.vercel.app`).
+
+Set the required Supabase variables for the relevant Preview and Production environments, then redeploy. Use only the public/anon or publishable browser key; protect database access with authentication and Row Level Security.
 
 ## Technology
 
@@ -139,8 +155,10 @@ Use environment-specific Vercel variables for deployment. The public browser key
 
 ## SEO and accessibility checklist
 
-- Unique localized title and meta description for every indexable page.
-- Correct canonical URL and language alternates.
+- [x] Localized title and meta description for the Spanish, Finnish and English homepages.
+- [x] Homepage canonical URLs and language alternates.
+- [ ] Add page-specific localized metadata to all destination, experience and CMS routes.
+- [ ] Ensure the rendered document language is correct for each locale route (the root layout currently defaults to Spanish).
 - Useful, descriptive image alt text and responsive image sizes.
 - Semantic headings, keyboard-accessible navigation and visible focus states.
 - Working sitemap and links that resolve to the correct language route.
@@ -150,11 +168,12 @@ Use environment-specific Vercel variables for deployment. The public browser key
 ## Roadmap
 
 ### Phase 1 — Foundation and release reliability
-- [ ] Keep the deployment branch building reliably.
+- [ ] Keep the deployment branch building reliably; the latest Vercel preview currently cannot be confirmed because the account hit Vercel's free-tier deployment limit (more than 100 deployments in 24 hours). Re-check after the limit resets.
 - [ ] Configure Supabase, authentication, database, storage and access policies.
 - [ ] Confirm the homepage, admin route and localized routes build and render.
 
 ### Phase 2 — Destination directory
+- [x] Add Naantali, Turku, Åland and Hanko as initial homepage destination cards, with additional top-level destinations supported from the admin.
 - [ ] Complete Salo, Perniö, Mathildedal, Teijo and Särkisalo pages.
 - [ ] Add a curated Kemiönsaari section with official provider/destination links.
 - [ ] Replace generic placeholder artwork with original or licensed photographs.
@@ -163,7 +182,9 @@ Use environment-specific Vercel variables for deployment. The public browser key
 ### Phase 3 — Owner-friendly CMS
 - [x] Connect published destination records to the Salo directory and localized destination detail routes.
 - [x] Render published admin-managed `pages` records on public localized routes in Spanish, Finnish and English.
-- [ ] Connect destination/page records to the database rather than hard-coded arrays.
+- [x] Connect homepage destination cards to published database records.
+- [x] Add parent/child destination hierarchy and multi-image galleries to the admin and destination pages.
+- [ ] Connect remaining hard-coded category and curated listing arrays to the database.
 - [ ] Add secure image upload and image rights/credit fields.
 - [ ] Add multilingual hero-slide editing, reordering, active/inactive controls and image alt text.
 - [ ] Add multilingual editing, draft preview, publish state and SEO fields.
@@ -178,3 +199,10 @@ Use environment-specific Vercel variables for deployment. The public browser key
 ## Definition of done
 
 A feature is not complete just because its code was committed. It is complete when the relevant build passes, the page is checked in a deployed preview, links and language variants work, content is sourced and legally usable, and any required backend configuration is verified.
+
+## Rakennusohjeiden yhdistäminen ja käyttöönotto
+
+Projektin mukana toimitettu Next.js/GitHub/Decap CMS -rakennusohje on sovitettu nykyiseen Finnexprience-toteutukseen dokumentissa [docs/RAKENNUSOHJEIDEN_YHDISTAMINEN.md](docs/RAKENNUSOHJEIDEN_YHDISTAMINEN.md). Finnexprience käyttää yhtä Supabase-pohjaista sisällönhallintaa; Decap CMS:ää, Netlify Formsia tai staattista vientiä ei pidä lisätä rinnalle ilman erillistä arkkitehtuuripäätöstä.
+
+Dokumentissa on vastaavuustaulukko sekä tarkistuslista kirjautumiselle, RLS-käyttöoikeuksille, migraatioille, kuvien oikeuksille, kieliversioille, SEO:lle ja oikean tuotantojulkaisun varmistamiselle. Buildin onnistuminen ei yksin todista, että tuotannon Supabase ja hostaus on testattu.
+
