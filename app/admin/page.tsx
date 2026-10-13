@@ -33,7 +33,14 @@ export default function AdminPage(){
   setSlides((sl.data??[]) as Slide[]);setPages((pg.data??[]) as Page[]);setDestinations((ds.data??[]) as Destination[]);setRequests((tr.data??[]) as TripRequest[]);setHomepage(st.data?.value??{});
   setLoading(false);
  }
- useEffect(()=>{load();},[]);
+ useEffect(()=>{
+  if(!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY){
+   setError("Supabase ei ole vielä määritetty Vercelissä. Lisää NEXT_PUBLIC_SUPABASE_URL ja NEXT_PUBLIC_SUPABASE_ANON_KEY projektin Environment Variables -asetuksiin ja käynnistä uusi deployment.");
+   setLoading(false);
+   return;
+  }
+  load();
+ },[]);
 
  async function login(){
   setError("");setLoading(true);
