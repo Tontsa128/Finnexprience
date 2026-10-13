@@ -199,3 +199,10 @@ Use environment-specific Vercel variables for deployment. The public browser key
 ## Definition of done
 
 A feature is not complete just because its code was committed. It is complete when the relevant build passes, the page is checked in a deployed preview, links and language variants work, content is sourced and legally usable, and any required backend configuration is verified.
+
+## Rakennusohjeiden yhdistäminen ja käyttöönotto
+
+Projektin mukana toimitettu Next.js/GitHub/Decap CMS -rakennusohje on sovitettu nykyiseen Finnexprience-toteutukseen dokumentissa [docs/RAKENNUSOHJEIDEN_YHDISTAMINEN.md](docs/RAKENNUSOHJEIDEN_YHDISTAMINEN.md). Finnexprience käyttää yhtä Supabase-pohjaista sisällönhallintaa; Decap CMS:ää, Netlify Formsia tai staattista vientiä ei pidä lisätä rinnalle ilman erillistä arkkitehtuuripäätöstä.
+
+Dokumentissa on vastaavuustaulukko sekä tarkistuslista kirjautumiselle, RLS-käyttöoikeuksille, migraatioille, kuvien oikeuksille, kieliversioille, SEO:lle ja oikean tuotantojulkaisun varmistamiselle. Buildin onnistuminen ei yksin todista, että tuotannon Supabase ja hostaus on testattu.
+
