@@ -3,17 +3,26 @@ import { createBrowserClient } from "@supabase/ssr";
 const BUILD_FALLBACK_URL = "https://build-placeholder.supabase.co";
 const BUILD_FALLBACK_KEY = "build-placeholder-anon-key";
 
+function isValidSupabaseUrl(value: string | undefined): value is string {
+  if (!value) return false;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 /**
- * The admin page is prerendered by Next.js during production builds. Keep that
- * prerender from failing when Vercel environment variables have not yet been
- * configured. The admin UI separately detects missing real credentials and
- * displays a setup message instead of attempting requests against this fallback.
+ * Next.js prerenders the admin page during production builds. Invalid or missing
+ * public Supabase settings must not crash that build. The admin page detects
+ * missing/invalid settings and shows a configuration message instead.
  */
 export function createSupabaseBrowserClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!url || !key) {
+  if (!isValidSupabaseUrl(url) || !key) {
     return createBrowserClient(BUILD_FALLBACK_URL, BUILD_FALLBACK_KEY);
   }
 
