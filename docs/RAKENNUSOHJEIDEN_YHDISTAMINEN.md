@@ -21,12 +21,12 @@ Erityisesti ohjeen `output: 'export'` ei sovi sellaisenaan tähän toteutukseen,
 |---|---|---|
 | Next.js + Tailwind | Nykyinen Next.js App Router + Tailwind | CI:n build onnistuu |
 | Selainpohjainen `/admin` | Oma Supabase Auth -hallintapaneeli | Testaa kirjautuminen oikealla admin-käyttäjällä |
-| Sivujen luonti ja muokkaus | Supabasen `pages)-taulu ja hallintapaneeli | Luo, muokkaa, julkaise ja piilota testisivu |
-| Kohteet ja alasivut | `destinations)-taulu, kohdehierarkia ja kohdesivut | Testaa Salo ja sen kohteet kaikilla kielillä |
-| Hero-kuvat ja galleriat | `hero_slides), kohteiden kansikuvat/galleriat ja Supabase Storage | Lataa, näytä ja vaihda testikuva; varmista alt-teksti ja käyttöoikeustiedot |
+| Sivujen luonti ja muokkaus | Supabasen `pages`-taulu ja hallintapaneeli | Luo, muokkaa, julkaise ja piilota testisivu |
+| Kohteet ja alasivut | `destinations`-taulu, kohdehierarkia ja kohdesivut | Testaa Salo ja sen kohteet kaikilla kielillä |
+| Hero-kuvat ja galleriat | `hero_slides`, kohteiden kansikuvat/galleriat ja Supabase Storage | Lataa, näytä ja vaihda testikuva; varmista alt-teksti ja käyttöoikeustiedot |
 | FI / EN / ES | Espanja oletuksena, lisäksi suomi ja englanti | Tarkista valikot, sivut, linkit ja metatiedot kaikilla kielillä |
-| Sivuston asetukset | Supabasen `site_settings) | Muuta etusivun tekstiä ja varmista, että muutos näkyy julkisella sivulla |
-| SEO ja sivukartta | Lokalisoidut CMS-metatiedot ja `app/sitemap.ts) | Avaa `/sitemap.xml` ja testaa julkaistut URL-osoitteet |
+| Sivuston asetukset | Supabasen `site_settings` | Muuta etusivun tekstiä ja varmista, että muutos näkyy julkisella sivulla |
+| SEO ja sivukartta | Lokalisoidut CMS-metatiedot ja `app/sitemap.ts` | Avaa `/sitemap.xml` ja testaa julkaistut URL-osoitteet |
 | Kuvien lähteet ja lisenssit | Hero-/kohdemedian lähde-, tekijä-, lisenssi- ja tarkistustiedot | Älä julkaise kuvaa, jonka käyttöoikeutta ei ole tarkistettu |
 | Yhteydenottolomake | Ei pidä olettaa toimivaksi vain käyttöliittymän perusteella | Varmista, onko lomakkeella toimiva tallennus-/lähetysreitti ja roskapostisuojaus ennen sen mainostamista |
 | GitHub-julkaisuputki | GitHub Actions tarkistaa buildin; PR pysyy erillään tuotannosta | Tarkista Actions ja erikseen hostauksen deployment |
@@ -43,9 +43,9 @@ Erityisesti ohjeen `output: 'export'` ei sovi sellaisenaan tähän toteutukseen,
 ### B. Supabase ja käyttöoikeudet
 - [ ] Projektin Supabase URL ja julkinen anon/publishable-avain on asetettu hostauksen ympäristömuuttujiin.
 - [ ] Kaikki migraatiot `0005`–`0008` on suoritettu kyseisessä Supabase-projektissa. Pelkkä SQL-tiedoston tallentaminen GitHubiin ei suorita migraatiota.
-- [ ] Oikea käyttäjä on lisätty `admin_users)-tauluun vasta, kun Supabase Auth -käyttäjä on luotu.
+- [ ] Oikea käyttäjä on lisätty `admin_users`-tauluun vasta, kun Supabase Auth -käyttäjä on luotu.
 - [ ] Kirjautumaton kävijä ei pääse hallintatoimintoihin.
-- [ ] Tavallinen kirjautunut käyttäjä ei pääse admin-toimintoihin ilman `admin_users)-jäsenyyttä.
+- [ ] Tavallinen kirjautunut käyttäjä ei pääse admin-toimintoihin ilman `admin_users`-jäsenyyttä.
 - [ ] Julkinen kävijä näkee vain julkaistut sivut ja aktiiviset hero-diat.
 - [ ] Storage-bucketin julkinen luku ja admin-rajoitetut kirjoitusoikeudet on tarkistettu.
 
