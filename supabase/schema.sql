@@ -23,10 +23,31 @@ create table if not exists pages (
   content_en text not null default '',
   content_fi text not null default '',
   hero_image text,
+  parent_slug text,
+  description_es text not null default '',
+  description_en text not null default '',
+  description_fi text not null default '',
+  blocks_es jsonb not null default '[]'::jsonb,
+  blocks_en jsonb not null default '[]'::jsonb,
+  blocks_fi jsonb not null default '[]'::jsonb,
+  sort_order integer not null default 0,
   published boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.pages
+  add column if not exists parent_slug text,
+  add column if not exists description_es text not null default '',
+  add column if not exists description_en text not null default '',
+  add column if not exists description_fi text not null default '',
+  add column if not exists blocks_es jsonb not null default '[]'::jsonb,
+  add column if not exists blocks_en jsonb not null default '[]'::jsonb,
+  add column if not exists blocks_fi jsonb not null default '[]'::jsonb,
+  add column if not exists sort_order integer not null default 0;
+
+create index if not exists pages_parent_slug_idx on public.pages(parent_slug);
+create index if not exists pages_published_sort_idx on public.pages(published, sort_order);
 
 create table if not exists hero_slides (
   id uuid primary key default gen_random_uuid(),
