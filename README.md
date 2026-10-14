@@ -2,7 +2,7 @@
 
 ## Käyttöönotto ja hallinta
 
-Katso [rakennus- ja ylläpito-ohje](docs/RAKENNUS_JA_YLLAPITO.md), jossa kuvataan Vercel- ja Supabase-asetukset, GitHub-/sähköpostikirjautuminen sekä ylläpitäjän oikeudet. Ennen kuin hallintapaneelia käytetään tuotannossa, aja tarvittaessa migraatio `supabase/migrations/0009_admin_users_self_select.sql` Supabasen SQL Editorissa ja lisää ylläpitäjä `admin_users`-tauluun.
+Katso [rakennus- ja ylläpito-ohje](docs/RAKENNUS_JA_YLLAPITO.md), jossa kuvataan Vercel- ja Supabase-asetukset, GitHub-/sähköpostikirjautuminen sekä ylläpitäjän oikeudet. Ennen kuin hallintapaneelia käytetään tuotannossa, aja tarvittaessa migraatio `supabase/migrations/0009_admin_users_self_select.sql` ja `supabase/migrations/0010_pages_content_builder.sql` Supabasen SQL Editorissa sekä lisää ylläpitäjä `admin_users`-tauluun.
 
 
 **Finnexprience is a multilingual travel discovery website for authentic Finland, starting with Salo and the Southwest Finland coast.** It helps visitors discover places to stay, local food, nature, villages, sauna and seasonal experiences, then sends them to the official provider to check current details and make arrangements directly.
