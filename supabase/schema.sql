@@ -43,6 +43,11 @@ create table if not exists hero_slides (
 );
 
 alter table admin_users enable row level security;
+drop policy if exists "admins can read own admin record" on admin_users;
+create policy "admins can read own admin record" on admin_users
+  for select to authenticated
+  using (user_id = auth.uid());
+
 alter table site_settings enable row level security;
 alter table pages enable row level security;
 alter table hero_slides enable row level security;
