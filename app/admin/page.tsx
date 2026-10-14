@@ -5,7 +5,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 import { FileText, ImagePlus, LayoutDashboard, LogIn, Plus, Save, Trash2, Upload, X, MapPin, Inbox, Github, ArrowUp, ArrowDown } from "lucide-react";
 
 type Slide={id:string;image_url:string;alt_es:string;eyebrow_es:string;sort_order:number;active:boolean};
-type Page={id?:string;slug:string;title_es:string;title_en:string;title_fi:string;content_es:string;content_en:string;content_fi:string;hero_image:string|null;parent_slug?:string|null;description_es?:string;description_en?:string;description_fi?:string;blocks_es?:any[];blocks_en?:any[];blocks_fi?:any[];sort_order?:number;published:boolean};
+type Page={id:string;slug:string;title_es:string;title_en:string;title_fi:string;content_es:string;content_en:string;content_fi:string;hero_image:string|null;parent_slug?:string|null;description_es?:string;description_en?:string;description_fi?:string;blocks_es?:any[];blocks_en?:any[];blocks_fi?:any[];sort_order?:number;published:boolean};
 type TripRequest={id:string;name:string|null;email:string;travel_date:string;interest:string;message:string;locale:string;status:string;created_at:string};
 type Destination={id:string;slug:string;name_es:string;name_en:string;name_fi:string;region:string;description_es:string;description_en:string;description_fi:string;image_url:string|null;category:string;featured:boolean;published:boolean;sort_order:number};
 
