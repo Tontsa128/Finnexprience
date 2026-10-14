@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
-import { FileText, ImagePlus, LayoutDashboard, LogIn, Plus, Save, Trash2, Upload, X, MapPin, Inbox, Github } from "lucide-react";
+import { FileText, ImagePlus, LayoutDashboard, LogIn, Plus, Save, Trash2, Upload, X, MapPin, Inbox, Github, ArrowUp, ArrowDown } from "lucide-react";
 
 type Slide={id:string;image_url:string;alt_es:string;eyebrow_es:string;sort_order:number;active:boolean};
 type Page={id?:string;slug:string;title_es:string;title_en:string;title_fi:string;content_es:string;content_en:string;content_fi:string;hero_image:string|null;parent_slug?:string|null;description_es?:string;description_en?:string;description_fi?:string;blocks_es?:any[];blocks_en?:any[];blocks_fi?:any[];sort_order?:number;published:boolean};
@@ -99,7 +99,7 @@ export default function AdminPage(){
  async function savePage(){
   if(!page?.slug)return;
   setSaving(true);
-  const payload={...page,hero_image:page.hero_image||null,updated_at:new Date().toISOString()};
+  const payload={...page,slug:String(page.slug).trim(),parent_slug:String(page.parent_slug||"").trim()||null,hero_image:page.hero_image||null,updated_at:new Date().toISOString()};
   const result=page.id?await supabase.from("pages").update(payload).eq("id",page.id):await supabase.from("pages").insert(payload);
   if(result.error)setError(result.error.message);else {setPage(null);await load();}
   setSaving(false);
@@ -126,6 +126,13 @@ export default function AdminPage(){
  }
  function updatePageBlock(index:number, changes:Record<string,any>){
   setPageBlocks(pageLocale,pageBlocks().map((block,i)=>i===index?{...block,...changes}:block));
+ }
+ function movePageBlock(index:number, direction:-1|1){
+  const blocks=[...pageBlocks()];
+  const target=index+direction;
+  if(target<0||target>=blocks.length)return;
+  [blocks[index],blocks[target]]=[blocks[target],blocks[index]];
+  setPageBlocks(pageLocale,blocks);
  }
  async function deletePage(id:string){await supabase.from("pages").delete().eq("id",id);await load();}
 
@@ -169,7 +176,7 @@ export default function AdminPage(){
   </div>
   <div className="mt-4 grid gap-4">
    {pageBlocks().map((block:any,index:number)=><div key={index} className="rounded-2xl bg-[#f5f6f2] p-4">
-    <div className="mb-3 flex items-center justify-between"><strong>{index+1}. {({text:"Teksti",image:"Kuva",gallery:"Kuvagalleria",buttons:"Linkki / painike",pages_list:"Alasivujen kortit",cta:"Toimintakehotus",embed:"Upotus",contact:"Yhteys"} as Record<string,string>)[block.type]||block.type}</strong><button type="button" onClick={()=>setPageBlocks(pageLocale,pageBlocks().filter((_,i)=>i!==index))} className="rounded-full border p-2 text-red-600" aria-label="Poista lohko"><Trash2 size={15}/></button></div>
+    <div className="mb-3 flex items-center justify-between gap-2"><strong>{index+1}. {({text:"Teksti",image:"Kuva",gallery:"Kuvagalleria",buttons:"Linkki / painike",pages_list:"Alasivujen kortit",cta:"Toimintakehotus",embed:"Upotus",contact:"Yhteys"} as Record<string,string>)[block.type]||block.type}</strong><div className="flex gap-1"><button type="button" disabled={index===0} onClick={()=>movePageBlock(index,-1)} className="rounded-full border p-2 disabled:opacity-30" aria-label="Siirrä lohkoa ylös"><ArrowUp size={15}/></button><button type="button" disabled={index===pageBlocks().length-1} onClick={()=>movePageBlock(index,1)} className="rounded-full border p-2 disabled:opacity-30" aria-label="Siirrä lohkoa alas"><ArrowDown size={15}/></button><button type="button" onClick={()=>setPageBlocks(pageLocale,pageBlocks().filter((_,i)=>i!==index))} className="rounded-full border p-2 text-red-600" aria-label="Poista lohko"><Trash2 size={15}/></button></div></div>
     {(block.type==="text"||block.type==="cta"||block.type==="contact")&&<input value={block.title||""} onChange={e=>updatePageBlock(index,{title:e.target.value})} className="mb-3 w-full rounded-xl border p-3" placeholder="Otsikko"/>}
     {block.type==="text"&&<textarea value={block.body||""} onChange={e=>updatePageBlock(index,{body:e.target.value})} className="min-h-28 w-full rounded-xl border p-3" placeholder="Teksti"/>}
     {block.type==="image"&&<><input value={block.image||""} onChange={e=>updatePageBlock(index,{image:e.target.value})} className="mb-3 w-full rounded-xl border p-3" placeholder="Kuvan URL /uploads/kuva.webp"/><input value={block.alt||""} onChange={e=>updatePageBlock(index,{alt:e.target.value})} className="mb-3 w-full rounded-xl border p-3" placeholder="Kuvan alt-teksti"/><input value={block.caption||""} onChange={e=>updatePageBlock(index,{caption:e.target.value})} className="w-full rounded-xl border p-3" placeholder="Kuvateksti (valinnainen)"/></>}
