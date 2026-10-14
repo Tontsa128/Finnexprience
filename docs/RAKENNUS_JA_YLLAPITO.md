@@ -19,7 +19,12 @@ Tallenna arvot Verceliin ja käynnistä sen jälkeen uusi deployment. Älä tall
 
 Uudessa Supabase-projektissa aja SQL Editorissa `supabase/schema.sql).
 
-Jos projekti on jo olemassa, aja vähintään uusi migraatio `supabase/migrations/0009_admin_users_self_select.sql`. Hallintapaneelin pitää saada lukea kirjautuneen käyttäjän oma `admin_users`-rivi. Ilman tätä RLS-sääntöä kirjautuminen voi onnistua, mutta käyttöliittymä ei tunnista käyttäjää ylläpitäjäksi.
+Jos projekti on jo olemassa, aja molemmat migraatiot Supabase SQL Editorissa:
+
+- `supabase/migrations/0009_admin_users_self_select.sql` – sallii käyttäjän lukea oman ylläpitäjärivinsä.
+- `supabase/migrations/0010_pages_content_builder.sql` – lisää sivuhierarkian, SEO-kuvaukset ja FI/EN/ES-sisältölohkot.
+
+Hallintapaneelin pitää saada lukea kirjautuneen käyttäjän oma `admin_users`-rivi. Ilman tätä RLS-sääntöä kirjautuminen voi onnistua, mutta käyttöliittymä ei tunnista käyttäjää ylläpitäjäksi. Sisältölohkojen editori edellyttää migraation 0010 sarakkeita.
 
 ### Lisää ensimmäinen ylläpitäjä
 
