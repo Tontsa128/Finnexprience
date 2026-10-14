@@ -1,19 +1,43 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Header from "@/components/Header";
+import CmsPageContent from "@/components/CmsPageContent";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
-export default async function DynamicPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const supabase = await createSupabaseServerClient();
-  if (!supabase) notFound();
+type PageProps = { params: Promise<{ slug: string }> };
 
+async function getPage(slug: string) {
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return null;
   const { data } = await supabase.from("pages").select("*").eq("slug", slug).eq("published", true).maybeSingle();
+  return data;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getPage(slug);
+  if (!data) return {};
+  return {
+    title: data.title_es || "Finnexprience",
+    description: data.description_es || data.content_es?.slice(0, 160) || undefined,
+    alternates: { canonical: `/${slug}` },
+  };
+}
+
+export default async function SpanishPage({ params }: PageProps) {
+  const { slug } = await params;
+  const data = await getPage(slug);
   if (!data) notFound();
 
-  return <><Header/><main className="pt-32"><article className="container-site py-16">
-    <div className="eyebrow text-copper">Finnexprience</div>
-    <h1 className="mt-3 max-w-4xl font-display text-5xl md:text-7xl">{data.title_es}</h1>
-    {data.hero_image && <img src={data.hero_image} alt="" className="mt-10 h-[420px] w-full rounded-[2rem] object-cover"/>}
-    <div className="prose prose-lg mt-10 max-w-3xl whitespace-pre-wrap leading-8 text-black/70">{data.content_es}</div>
-  </article></main></>;
+  return <>
+    <Header />
+    <main className="pt-32">
+      <article className="container-site py-16">
+        <div className="eyebrow text-copper">Finnexprience</div>
+        <h1 className="mt-3 max-w-4xl font-display text-5xl md:text-7xl">{data.title_es || data.title_en || data.title_fi || slug}</h1>
+        {data.hero_image && <img src={data.hero_image} alt="" className="mt-10 h-[420px] w-full rounded-[2rem] object-cover" />}
+        <CmsPageContent page={data} locale="es" />
+      </article>
+    </main>
+  </>;
 }
